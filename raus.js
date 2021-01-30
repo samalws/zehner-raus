@@ -8,6 +8,16 @@ function removeIndex(i,arr) {
 	arr2.splice(i,1)
 	return arr2
 }
+function shuffle(arr) {
+	let i = arr.length
+	while (i > 0) {
+		let j = Math.floor(Math.random() * i)
+		i--
+		let tmp = arr[i]
+		arr[i] = arr[j]
+		arr[index] = tmp
+	}
+}
 
 class Card {
 	constructor(suit,number) {
@@ -112,4 +122,32 @@ class Game {
 		else
 			return added
 	}
+}
+
+let numSuits = 4
+let numInSuit = 20
+let allCards = []
+for (var suit = 0; suit < numSuits; suit++)
+	for (var num = 0; num <= numInSuit; num++)
+		allCards.splice(allCards.length,0,new Card(suit,num))
+
+function firstDran(hands) {
+	for (var suit = 0; suit < numSuits; suit++)
+		for (var dran = 0; dran < hands.length; dran++)
+			for (card in hands[dran])
+				if (card.suit == suit && card.number == 10)
+					return dran
+	return Math.floor(Math.random()*hands.length)
+}
+
+function generateGame(numPlayers) {
+	if (numPlayers > 6) return null
+
+	let numCardsToDeal = 60 / numPlayers
+	let deck = [...allCards]
+	shuffle(deck)
+	let hands = []
+	for (var i = 0; i < numPlayers; i++)
+		hands.splice(i,0,deck.splice(0,numCardsToDeal))
+	return new Game(hands,firstDran(hands),0,deck,[],[])
 }
