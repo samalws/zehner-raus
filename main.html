@@ -1,0 +1,129 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Zehner Raus!</title>
+  <!--
+  <meta name="A game lol" content="A game lol">
+-->
+
+  <link rel="stylesheet" href="css/main.css?v=1.0">
+</head>
+
+<body>
+  <img class = "logo" src = "assets/zehner_raus_logo.png" alt = "Zehner Raus Logo">
+  </img>
+  <div class = "chatbox">
+    Chat here you bozos!
+    <div class = "actualchat">
+      lol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lollol <br>
+      lol
+    </div>
+  <div class="send-message">
+    <input type="text" placeholder=" Type here!" id="send_message">
+    <button type="submit" id = "submit_button" onclick="javascript:alert('send message now!')">Send</button>
+  </div>
+  </div>
+  <div class = hand>
+    this will be the hand lol
+  </div>
+  <div class = "playerlist">
+    playerlist
+  </div>
+  <div class = "board">
+    <div class = "playcolor">
+      <div class = "card">
+        test card11
+      </div>
+      <div class = "card" id="sample_green">
+        <span class="corner_text text_green">10<br></span>
+        <span class="center_text text_green"><br>10</span>
+      </div>
+      <div class = "card">
+        test card13
+      </div>
+    </div>
+    <div class = "playcolor">
+      <div class = "card">
+        test card11
+      </div>
+      <div class = "card">
+        test card12
+      </div>
+      <div class = "card">
+        test card13
+      </div>
+    </div>
+    <div class = "playcolor">
+      <div class = "card">
+        test card11
+      </div>
+      <div class = "card">
+        test card12
+      </div>
+      <div class = "card">
+        test card13
+      </div>
+    </div>
+    <div class = "playcolor">
+      <div class = "card">
+        test card11
+      </div>
+      <div class = "card">
+        test card12
+      </div>
+      <div class = "card">
+        test card13
+      </div>
+    </div>
+  </div>
+
+
+  <button class  = "endbutton">
+    <p>
+      END TURN
+    </p>
+  </button>
+
+  <script>
+  var input = document.getElementById("send_message");
+  input.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+     event.preventDefault();
+     alert(document.getElementById("send_message").value);
+    }
+  });
+</script>
+</body>
+</html>

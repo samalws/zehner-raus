@@ -1,0 +1,138 @@
+body{
+  background-color: #2C2F33;
+  color: white;
+}
+
+.logo{
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  height: 20%;
+}
+
+.chatbox{
+  position: absolute;
+  left: 5px;
+  top: 25%;
+  width: 20%;
+  height: 50%;
+}
+
+.hand{
+  position: absolute;
+  bottom: 0;
+  height: 14%;
+  width: 75%;
+  left: 12.5%;
+  border: 3px solid;
+}
+
+.playerlist{
+  position: absolute;
+  border: 3px solid;
+  right: 5px;
+  top: 5px;
+  height: 25%;
+  width: 25vh;
+}
+
+.card{
+  border: 3px solid;
+  height: 14vh;
+  width: 10vh;
+  line-height: 3vh;
+  margin-left: auto;
+  margin-right: auto;
+  transition-duration: 0.25s;
+  background-color: white;
+  border-radius: 12px;
+}
+
+.text_green {
+  color: #9fcc7a;
+}
+
+.chatbox{
+  position: absolute;
+  left: 5px;
+  top: 25%;
+  width: 20%;
+  height: 50%;
+  overflow: visible;
+  padding: 0;
+}
+
+.actualchat{
+  height: 45vh;
+  width: 20vw;
+  overflow: auto;
+  padding: 0;
+}
+
+.send-message input{
+  position: absolute;
+  height: 2em;
+  width: 100%;
+  padding: 0;
+  border: 0;
+}
+
+.send-message button{
+  display: none;
+  border: 0;
+  padding: 0;
+}
+/*.corner_text {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  display: block;
+}*/
+
+.center_text {
+  display:block;
+  font-size: 350%;
+  width:100%;
+  text-align:center;
+}
+
+.card:hover {
+  transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+.board{
+  padding-top: 3.5vh;
+  padding-bottom: 3.5vh;
+  display: grid;
+  border: 3px solid;
+  position: absolute;
+  height: 75%;
+  width: 50%;
+  top: 5px;
+  left: 25%;
+  margin: auto;
+}
+
+.endbutton{
+  line-height: 21%;
+  border: 3px solid white;
+  position: absolute;
+  height: 21%;
+  width: 15vh;
+  right: 5px;
+  bottom: 5px;
+  border-radius: 12px;
+  transition-duration: 0.25s;
+  /*vertical-align: middle;*/
+}
+
+.playcolor{
+  display: inline-flex;
+  width: 50%;
+  margin: auto;
+}
+
+.endbutton:hover{
+  background-color: red;
+  transform: translate(-25%, -25%) scale(1.5);
+}

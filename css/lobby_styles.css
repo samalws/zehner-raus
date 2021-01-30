@@ -1,0 +1,48 @@
+body {
+	background-color: #2C2F33;
+}
+
+div {
+	position: absolute;
+}
+
+div:not(.startbutton) {
+	border: 3px solid white;
+}
+
+.logo {
+	height: 25%;
+	top: 5%;
+	left: 50%;
+	height: 40%;
+	width: 30vh;
+	transform: translateX(-50%);
+}
+
+.startbutton {
+	top: 55%;
+	left: 40%;
+	width: 10%;
+	height: 3vw;
+	text-align: center;
+}
+
+#start {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	border-radius: 12px;
+	background-color: #2C2F33;
+	padding: 0;
+	border: 3px solid white;
+	background: none;
+}
+
+#start:hover {
+	background-color: #9fcc7a;
+	transform: scale(1.25);
+}
+
+* {
+	color: white;
+}
