@@ -15,7 +15,7 @@ function shuffle(arr) {
 		i--
 		let tmp = arr[i]
 		arr[i] = arr[j]
-		arr[index] = tmp
+		arr[j] = tmp
 	}
 }
 
@@ -26,15 +26,15 @@ class Card {
 	}
 	play(cards) {
 		if (this.number == 10)
-			return cards.append(this)
-		for (var i = 0; i < cards.length; i++) {
+			return cards.concat(this)
+		for (i in cards) {
 			let card = cards[i]
 			if (this.suit != card.suit)
 				continue
 
 			if (this.number == 9 || this.number == 11) {
 				if (card.number == 10)
-					return cards.append(this)
+					return cards.concat(this)
 			} else if (this.number < 9) {
 				if (this.number == card.number - 1)
 					return replaceIndex(i,this,cards)
@@ -76,7 +76,7 @@ class Game {
 	canEndTurn() {
 		return this.dranState == -1 || this.dranState == 3 || this.dranEmptyHand()
 	}
-	justFinishTurn() {
+	justEndTurn() {
 		if (!this.canEndTurn())
 			return null
 		else if (this.dranEmptyHand() && !this.dranWon())
@@ -84,8 +84,8 @@ class Game {
 		else
 			return new Game(this.hands,(this.dran + 1) % this.numPlayers(),0,this.deck,this.cardsDown,this.winOrder)
 	}
-	finishTurn() {
-		let jft = this.justFinishTurn()
+	endTurn() {
+		let jft = this.justEndTurn()
 		if (this.gameIsOver() || jft == null)
 			return null
 		else if (jft.dranWon())
@@ -105,7 +105,7 @@ class Game {
 		return new Game(newHands,this.dran,-1,this.deck,newCardsDown,this.winOrder)
 	}
 	canPlayCard() {
-		for (var i = 0; i < this.hands[this.dran].length; i++)
+		for (i in this.hands[this.dran])
 			if (this.playCard(i) != null)
 				return true
 		return false
@@ -133,10 +133,12 @@ for (var suit = 0; suit < numSuits; suit++)
 
 function firstDran(hands) {
 	for (var suit = 0; suit < numSuits; suit++)
-		for (var dran = 0; dran < hands.length; dran++)
-			for (card in hands[dran])
+		for (dran in hands)
+			for (cardIndex in hands[dran]) {
+				let card = hands[dran][cardIndex]
 				if (card.suit == suit && card.number == 10)
 					return dran
+			}
 	return Math.floor(Math.random()*hands.length)
 }
 
