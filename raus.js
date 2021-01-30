@@ -43,33 +43,36 @@ class Card {
 class Game {
 	// dran = the person whose turn it is, adrian moment lol
 	// dranState: -1 if played a card, 0 if just starting turn, n if drawn n cards from deck
-	constructor(hands,dran,dranState,deck,cardsDown) {
+	constructor(hands,dran,dranState,deck,cardsDown,winOrder) {
 		this.hands = hands
 		this.dran = dran
 		this.dranState = dranState
 		this.deck = deck
 		this.cardsDown = cardsDown
+		this.winOrder = winOrder
 	}
 	numPlayers() {
 		return this.hands.length
 	}
 	gameIsOver() {
-		for (hand in this.hands)
-			if (hand.length > 0)
-				return false
-		return true
+		return this.winOrder.length == this.numPlayers()
 	}
-	dranWon() {
+	dranEmptyHand() {
 		return this.hands[this.dran].length == 0
 	}
+	dranWon() {
+		return this.winOrder.includes(this.dran)
+	}
 	canEndTurn() {
-		return this.dranState == -1 || this.dranState == 3 || this.deck.length == 0
+		return this.dranState == -1 || this.dranState == 3 || this.dranEmptyHand()
 	}
 	justFinishTurn() {
 		if (!this.canEndTurn())
 			return null
+		else if (this.dranEmptyHand() && !this.dranWon())
+			return new Game(this.hands,(this.dran + 1) % this.numPlayers(),0,this.deck,this.cardsDown,this.winOrder.concat(this.dran))
 		else
-			return new Game(this.hands,(this.dran + 1) % this.numPlayers(),0,this.deck,this.cardsDown)
+			return new Game(this.hands,(this.dran + 1) % this.numPlayers(),0,this.deck,this.cardsDown,this.winOrder)
 	}
 	finishTurn() {
 		let jft = this.justFinishTurn()
@@ -89,7 +92,7 @@ class Game {
 		if (newCardsDown == null)
 			return null
 		let newHands = replaceIndex(this.dran,removeIndex(i,hand),this.hands)
-		return new Game(newHands,this.dran,-1,this.deck,newCardsDown)
+		return new Game(newHands,this.dran,-1,this.deck,newCardsDown,this.winOrder)
 	}
 	canPlayCard() {
 		for (var i = 0; i < this.hands[this.dran].length; i++)
@@ -102,7 +105,7 @@ class Game {
 			return null
 		let cardDrawn = this.deck[0]
 		let newHands = replaceIndex(this.dran,[cardDrawn].concat(this.hands[this.dran]),this.hands)
-		let added = new Game(newHands,this.dran,this.dranState+1,removeIndex(0,this.deck),this.cardsDown)
+		let added = new Game(newHands,this.dran,this.dranState+1,removeIndex(0,this.deck),this.cardsDown,this.winOrder)
 		let played = added.playCard(0)
 		if (played != null)
 			return played
