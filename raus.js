@@ -24,6 +24,9 @@ class Card {
 		this.suit = suit
 		this.number = number
 	}
+	static fromObj(obj) { // make Card from an obj that doesnt have methods
+		return new Card(obj.suit,obj.number)
+	}
 	play(cards) {
 		if (this.number == 10)
 			return cards.concat(this)
@@ -60,6 +63,17 @@ class Game {
 		this.deck = deck
 		this.cardsDown = cardsDown
 		this.winOrder = winOrder
+	}
+	static fromObj(obj) { // make Game from an obj that doesnt have methods
+		let hands = obj.hands.map((x) => x.map(Card.fromObj))
+		let deck = obj.deck.map(Card.fromObj)
+		return new Game(hands,obj.dran,obj.dranState,deck,obj.cardsDown,obj.winOrder)
+	}
+	static fromJSON(str) {
+		return Game.fromObj(JSON.parse(str))
+	}
+	toJSON() {
+		return JSON.stringify(this)
 	}
 	numPlayers() {
 		return this.hands.length
