@@ -1,19 +1,19 @@
 function replaceIndex(i,elem,arr) {
-	let arr2 = [...arr]
+	const arr2 = [...arr]
 	arr2[i] = elem
 	return arr2
 }
 function removeIndex(i,arr) {
-	let arr2 = [...arr]
+	const arr2 = [...arr]
 	arr2.splice(i,1)
 	return arr2
 }
 function shuffle(arr) {
-	let i = arr.length
+	const i = arr.length
 	while (i > 0) {
-		let j = Math.floor(Math.random() * i)
+		const j = Math.floor(Math.random() * i)
 		i--
-		let tmp = arr[i]
+		const tmp = arr[i]
 		arr[i] = arr[j]
 		arr[j] = tmp
 	}
@@ -31,7 +31,7 @@ class Card {
 		if (this.number == 10)
 			return cards.concat(this)
 		for (i in cards) {
-			let card = cards[i]
+			const card = cards[i]
 			if (this.suit != card.suit)
 				continue
 
@@ -65,8 +65,8 @@ class Game {
 		this.winOrder = winOrder
 	}
 	static fromObj(obj) { // make Game from an obj that doesnt have methods
-		let hands = obj.hands.map((x) => x.map(Card.fromObj))
-		let deck = obj.deck.map(Card.fromObj)
+		const hands = obj.hands.map((x) => x.map(Card.fromObj))
+		const deck = obj.deck.map(Card.fromObj)
 		return new Game(hands,obj.dran,obj.dranState,deck,obj.cardsDown,obj.winOrder)
 	}
 	static fromJSON(str) {
@@ -99,7 +99,7 @@ class Game {
 			return new Game(this.hands,(this.dran + 1) % this.numPlayers(),0,this.deck,this.cardsDown,this.winOrder)
 	}
 	endTurn() {
-		let jft = this.justEndTurn()
+		const jft = this.justEndTurn()
 		if (this.gameIsOver() || jft == null)
 			return null
 		else if (jft.dranWon())
@@ -108,14 +108,14 @@ class Game {
 			return jft
 	}
 	playCard(i) {
-		let hand = this.hands[this.dran]
+		const hand = this.hands[this.dran]
 		if (i >= hand.length)
 			return null
-		let card = hand[i]
-		let newCardsDown = card.play(this.cardsDown)
+		const card = hand[i]
+		const newCardsDown = card.play(this.cardsDown)
 		if (newCardsDown == null)
 			return null
-		let newHands = replaceIndex(this.dran,removeIndex(i,hand),this.hands)
+		const newHands = replaceIndex(this.dran,removeIndex(i,hand),this.hands)
 		return new Game(newHands,this.dran,-1,this.deck,newCardsDown,this.winOrder)
 	}
 	canPlayCard() {
@@ -127,10 +127,10 @@ class Game {
 	drawCard() {
 		if (this.canPlayCard() || this.canEndTurn())
 			return null
-		let cardDrawn = this.deck[0]
-		let newHands = replaceIndex(this.dran,[cardDrawn].concat(this.hands[this.dran]),this.hands)
-		let added = new Game(newHands,this.dran,this.dranState+1,removeIndex(0,this.deck),this.cardsDown,this.winOrder)
-		let played = added.playCard(0)
+		const cardDrawn = this.deck[0]
+		const newHands = replaceIndex(this.dran,[cardDrawn].concat(this.hands[this.dran]),this.hands)
+		const added = new Game(newHands,this.dran,this.dranState+1,removeIndex(0,this.deck),this.cardsDown,this.winOrder)
+		const played = added.playCard(0)
 		if (played != null)
 			return played
 		else
@@ -138,9 +138,9 @@ class Game {
 	}
 }
 
-let numSuits = 4
-let numInSuit = 20
-let allCards = []
+const numSuits = 4
+const numInSuit = 20
+const allCards = []
 for (var suit = 0; suit < numSuits; suit++)
 	for (var num = 0; num <= numInSuit; num++)
 		allCards.splice(allCards.length,0,new Card(suit,num))
@@ -149,7 +149,7 @@ function firstDran(hands) {
 	for (var suit = 0; suit < numSuits; suit++)
 		for (dran in hands)
 			for (cardIndex in hands[dran]) {
-				let card = hands[dran][cardIndex]
+				const card = hands[dran][cardIndex]
 				if (card.suit == suit && card.number == 10)
 					return dran
 			}
@@ -159,10 +159,10 @@ function firstDran(hands) {
 function generateGame(numPlayers) {
 	if (numPlayers > 6) return null
 
-	let numCardsToDeal = 60 / numPlayers
-	let deck = [...allCards]
+	const numCardsToDeal = 60 / numPlayers
+	const deck = [...allCards]
 	shuffle(deck)
-	let hands = []
+	const hands = []
 	for (var i = 0; i < numPlayers; i++)
 		hands.splice(i,0,deck.splice(0,numCardsToDeal))
 	return new Game(hands,firstDran(hands),0,deck,[],[])
