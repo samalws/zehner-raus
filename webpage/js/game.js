@@ -47,10 +47,10 @@ function applyHand(hand, game) {
 		const card0 = children[i].querySelector(".card")
 		const j = i
 		card0.onclick = () => clicky(j);
-		if(game.cardIsPlayable(hand[i])){
+		if(game.cardIsPlayable(hand[i]))
 			card0.classList.add('highlighted');
-			console.log("nani?")
-		}
+		else
+			card0.classList.remove('highlighted')
 	}
 }
 
@@ -59,11 +59,11 @@ function clicky(index) {
 	socket.send("move playCard "+index)
 }
 
-function endTurnClicked() {
+function endTurn() {
 	socket.send("move endTurn")
 }
 
-function drawCardClicked() {
+function drawCard() {
 	socket.send("move drawCard")
 }
 
