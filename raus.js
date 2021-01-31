@@ -116,6 +116,9 @@ class Game {
 				return true
 		return false
 	}
+	cardIsPlayable(card) {
+        return card.play(this.cardsDown) !== null
+    }
 	drawCard() {
 		if (this.canPlayCard() || this.canEndTurn())
 			return null

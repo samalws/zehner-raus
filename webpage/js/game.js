@@ -21,7 +21,7 @@ function makeHandCard() {
 	document.querySelector(".hand").appendChild(cardContainer)
 	return cardContainer
 }
-function applyHand(hand) {
+function applyHand(hand, game) {
 	const handDiv = document.querySelector(".hand")
 
 	let children = [...handDiv.querySelectorAll(".card-container")]
@@ -44,8 +44,22 @@ function applyHand(hand) {
 		centerText.classList[1] = className
 		cornerText.innerText = hand[i].number
 		centerText.innerText = hand[i].number
+		const card0 = children[i].querySelector(".card")
+		const j = i
+		card0.onclick = () => clicky(j);
+		if(game.cardIsPlayable(hand[i])){
+			card0.classList.add('highlighted');
+			console.log("nani?")
+		}
 	}
 }
+
+function clicky(i){
+	//called upon clicking a card!
+	//this returns the index!
+	console.log(i)
+}
+
 function applyDran(dran) {
 	// tf do I do here lmao
 }
@@ -87,7 +101,7 @@ function applyWinOrder(winOrder) {
 	// tf do I do here lmao
 }
 function applyGameState(myNumber,game) {
-	applyHand(game.hands[myNumber])
+	applyHand(game.hands[myNumber], game)
 	applyDran(game.dran)
 	applyDranState(game.dranState)
 	applyDeckAmt(game.deck.length)
