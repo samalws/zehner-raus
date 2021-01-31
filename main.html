@@ -223,7 +223,8 @@
         test card11
       </div>
       <div class = "card">
-        test card12
+        <span class="corner_text text_teal">10</span>
+        <span class="center_text text_teal">10</span>
       </div>
       <div class = "card">
         test card13
@@ -234,7 +235,8 @@
         test card11
       </div>
       <div class = "card">
-        test card12
+        <span class="corner_text text_pink">10</span>
+        <span class="center_text text_pink">10</span>
       </div>
       <div class = "card">
         test card13
@@ -245,7 +247,8 @@
         test card11
       </div>
       <div class = "card">
-        test card12
+        <span class="corner_text text_yellow">10</span>
+        <span class="center_text text_yellow">10</span>
       </div>
       <div class = "card">
         test card13
@@ -253,7 +256,15 @@
     </div>
   </div>
 
+  <div class="drawpile">
+    Draw! <br>20 Left!
 
+    <div class="drawpile_card card">
+
+    <img class="card_back" src = "assets/zehner_raus_logo.png" alt = "Zehner Raus Logo">
+
+    </div>
+  </div>
   <button class  = "endbutton">
     <p>
       END TURN
@@ -271,10 +282,12 @@
 
 var imgs = document.querySelectorAll('.card');
 
+/*
 for (var i = 0; i < imgs.length; i++) {
   imgs[i].onclick = toggleAnimation;
   imgs[i].style.webkitAnimationPlayState = 'running';
 }
+*/
 
 function toggleAnimation() {
   var style;

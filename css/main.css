@@ -5,6 +5,7 @@
 body{
   background-color: #2C2F33;
   color: white;
+  overflow: hidden;
 }
 
 .logo{
@@ -39,11 +40,36 @@ body{
 
 }
 
+.drawpile {
+  position: absolute;
+  right: 20%;
+  top: 30%;
+  width: 12.5vh;
+  text-align: center;
+}
 
+
+
+.drawpile_card {
+  background-color: #2C2F33;
+  color: white;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.card_back {
+  position: absolute;
+  vertical-align: middle;
+  width: 100%;
+  top: 50%;
+  left: 50%;
+  margin-top: -50%;
+   margin-left: -50%;
+}
 
 .hand{
   position: absolute;
-  bottom: 0;
+  bottom: 5px;
   height: 15%;
   left: 12.5%;
   width: 75vw;
@@ -68,6 +94,18 @@ body{
 
 .text_green {
   color: #9fcc7a;
+}
+
+.text_teal {
+  color: #b8e2df;
+}
+
+.text_pink {
+  color: #eaaacc;
+}
+
+.text_yellow {
+  color: #ffc90c;
 }
 
 .chatbox{
@@ -118,10 +156,20 @@ body{
 }
 
 #sample_green{
+  /*opacity: 0*/
   animation: highlighted 3s infinite;
+
 }
 
+/*
+#sample_green:hover{
+  opacity: 1;
+}
+*/
+
+
 .card:hover {
+  opacity: 1;
   transform: scale(1.5) !important; /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
   z-index: 9001;
 }
@@ -166,6 +214,10 @@ body{
 .endbutton:hover{
   background-color: red;
   transform: translate(-25%, -25%) scale(1.5);
+}
+
+.drawpile_card:hover{
+  transform: translate(0, 25%) scale(1.5) !important;
 }
 
 @keyframes highlighted {
