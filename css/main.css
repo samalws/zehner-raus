@@ -42,7 +42,7 @@ body{
 
 .drawpile {
   position: absolute;
-  right: 20%;
+  right: 10%;
   top: 30%;
   width: 12.5vh;
   text-align: center;
@@ -169,7 +169,6 @@ body{
 
 
 .card:hover {
-  opacity: 1;
   transform: scale(1.5) !important; /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
   z-index: 9001;
 }
@@ -181,6 +180,7 @@ body{
 }
 
 .board{
+  border: 3px solid white;
   padding-top: 3.5vh;
   padding-bottom: 3.5vh;
   display: grid;
@@ -207,7 +207,7 @@ body{
 
 .playcolor{
   display: inline-flex;
-  width: 50%;
+  width: 100%;
   margin: auto;
 }
 
@@ -216,7 +216,59 @@ body{
   transform: translate(-25%, -25%) scale(1.5);
 }
 
-.drawpile_card:hover{
+.cardpile{
+  position: relative;
+  height: 17.5vh;
+  width: 43%;
+  float: left;
+  border: 3px solid white;
+}
+
+.playedcardright{
+  float: right;
+}
+.playedcardleft{
+
+  margin-left: -10vh;
+  float: left;
+  opacity: 0;
+  z-index: 0;
+  transition-duration: 0s;
+}
+
+
+
+.cardpile .playedcardleft:first-child{
+  margin-left: 0;
+  float:left;
+}
+.playedcardleft:last-child{
+  position: absolute;
+  margin-left: 0;
+  opacity: 1;
+  z-index: 9002;
+}
+
+.cardpile:hover > .playedcardleft{
+  opacity: 1;
+}
+
+.cardpile:hover > .playedcardleft:last-child{
+  position: relative;
+  margin-left: -10vh;
+}
+/*
+.cardpile .playedcardleft:last-child:hover{
+
+  margin-left: 12vh;
+}
+*/
+
+.playedcardleft: hover{
+  z-index: 0;
+}
+
+.drawpile_card:hover {
   transform: translate(0, 25%) scale(1.5) !important;
 }
 

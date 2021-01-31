@@ -202,20 +202,32 @@
   </div>
 
   <div class = "playerlist">
-    Playerlist:
+    Playerlist: <br>
+    U R: [name here]
   </div>
 
   <div class = "board">
     <div class = "playcolor" id = "green-pile">
-      <div class = "card">
-        test card11
+      <div class = "cardpile">
+        <div class = "card playedcardright">
+          test card11
+        </div>
       </div>
+
       <div class = "card" id="sample_green">
         <span class="corner_text text_green">10</span>
         <span class="center_text text_green">10</span>
       </div>
-      <div class = "card">
-        test card13
+      <div class = "cardpile">
+        <div class = "card playedcardleft">
+          test card13
+        </div><div class = "card playedcardleft">
+          test card13
+        </div><div class = "card playedcardleft">
+          test card13
+        </div><div class = "card playedcardleft">
+          test card13
+        </div>
       </div>
     </div>
     <div class = "playcolor" id = "teal-pile">
@@ -288,6 +300,12 @@ for (var i = 0; i < imgs.length; i++) {
   imgs[i].style.webkitAnimationPlayState = 'running';
 }
 */
+
+console.log(document.getElementById("green-pile").childNodes);
+
+var greenChildNodes = document.getElementById("green-pile").childNodes
+var greencardpiles = document.getElementById("green-pile").querySelectorAll(".playedcardleft")
+console.log(greencardpiles);
 
 function toggleAnimation() {
   var style;
