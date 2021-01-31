@@ -349,7 +349,14 @@ function main() {
 	pageText = "example page"
 	const htServer = http.createServer((req,res) => {
 		res.writeHead(200)
-		res.end(pageText)
+		let filepath = "../webpage/"
+		if (req.url == "/")
+			filepath += "index.html"
+		else
+			filepath += req.url
+		try {
+			res.end(fs.readFileSync(filepath))
+		} catch (e) {}
 	})
 	htServer.listen(80,() => {})
 
