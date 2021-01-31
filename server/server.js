@@ -57,7 +57,7 @@ function serveGameWithExtraStuff(plrs,doneCallback) {
 	const plrList = lobbyToSerializable(plrs)
 
 	const numPlayers = conns.length
-	const msgToClient = ((plrNum, msg) => conns[plrNum].send("0" + msg))
+	const msgToClient = ((plrNum, msg) => conns[plrNum].send("gameState " + msg))
 	var msgHandler = undefined
 	var disconnectHandler = undefined
 	const gameOver = ((finalGame) => {
@@ -82,7 +82,7 @@ function serveGameWithExtraStuff(plrs,doneCallback) {
 			break
 		case "chat ": // chat
 			for (var i = 0; i < numPlayers; i++)
-				conns[plrNum].send("1" + plrNum + ":" + msg1)
+				conns[plrNum].send("chat " + plrNum + ":" + msg1)
 			break
 		case "quit ": // quit
 			gameOver(getGame())
@@ -221,11 +221,11 @@ function addPlrToLobby(conn,lobbyId,lobbies) { // return plr's id
 
 	return user.id
 }
-function addLobby(conn,lobbies) { // return [user id,lobby id]
+function addLobby(conn,lobbies,id) { // return [user id,lobby id]
 	if (userIsInALobby(conn,lobbies))
 		return undefined
 
-	const lobbyId = makeLobbyId(lobbies)
+	const lobbyId = id !== undefined ? id : makeLobbyId(lobbies)
 	if (lobbies[lobbyId] !== undefined)
 		return undefined
 	lobbies[lobbyId] = []
@@ -300,6 +300,8 @@ function lobbyListenConn(conn,lobbies) {
 			restOfMsg = parseInt(msg.substring("joinLobby ".length))
 			if (lobbies[restOfMsg] !== undefined)
 				returnVal = addPlrToLobby(conn,restOfMsg,lobbies)
+			else
+				returnVal = addLobby(conn,lobbies,restOfMsg)
 		} else if (msg == "addLobby")
 			returnVal = addLobby(conn,lobbies)
 		else if (msg.substring(0,"changeName ".length) == "changeName ") {
@@ -356,7 +358,9 @@ function main() {
 			filepath += req.url
 		try {
 			res.end(fs.readFileSync(filepath))
-		} catch (e) {}
+		} catch (e) {
+			res.end()
+		}
 	})
 	htServer.listen(80,() => {})
 

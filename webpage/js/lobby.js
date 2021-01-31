@@ -1,3 +1,8 @@
+whichPageLoaded = "lobby"
+
+
+
+
 console.log("lobby.js loaded")
 
 var playerlist = ["currentname1", "currentname2", "currentname3", "currentname4", "currentname5", "currentname6"]
@@ -68,6 +73,10 @@ updatePlayerList(playerlist)
 function ding(){
   document.getElementById('beep-sound').play()
   //TODO send ding
+}
+
+function startButton(){
+  socket.send("startGame")
 }
 
 function tomain(){
