@@ -239,6 +239,14 @@ body{
   z-index: 0;
   transition-duration: 0s;
 }
+.cardpile .playedcardleft:first-child{
+  margin-right: 0;
+}
+
+.cardpile .playedcardright:first-child{
+  margin-left: 0;
+}
+/*
 
 .cardpile .playedcardleft:first-child{
   margin-right: 0;
@@ -257,9 +265,8 @@ body{
 .playedcardright:last-child{
   position: absolute;
   margin-left: 0;
-  z-index: 9002;
 }
-
+/
 .cardpile:hover > .playedcardright, .cardpile:hover > .playedcardleft{
   opacity: 1;
 }
@@ -268,17 +275,11 @@ body{
   position: relative;
   margin-left: -10vh;
 }
-/*
-.cardpile .playedcardright:last-child:hover{
-
-  margin-left: 12vh;
-}
-*/
 
 .playedcardright: hover{
   z-index: 0;
 }
-
+*/
 .drawpile_card:hover {
   transform: translate(0, 25%) scale(1.5) !important;
 }

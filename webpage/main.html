@@ -433,20 +433,92 @@ var card0 = document.getElementsByClassName('card')[0],
     }
 
 
-    function AnimationListener() {
-        if(hovered)
-        {
-          card0.classList.remove('highlighted');
-          card0.style.transform = 'scale(2)';
-        }
+    function convertIDtoIndex(num){
+      var toReturn
+      if (num > 10){
+        toReturn = num - 11;
+      } else{
+        toReturn = 9-num;
+      }
+      return toReturn
     }
 
-    function TransitionListener() {
-      if(!hovered)
-      {
-        card0.classList.add('highlighted');
+    var nthchildindex = 6
+
+    var arrayOfLatestCards;
+    var pile = document.getElementsByClassName("cardpile");
+    for(var j = 0; j < 8; j++){
+      const i = j
+      //get nth childindex from arrayofLatestCards
+      leftRightOG = i % 2;
+      console.log(leftRightOG);
+      const leftRight = leftRightOG;
+      const allcards2 = pile[i].querySelectorAll('.card')
+      pile[i].onmouseover = function() {
+
+        console.log(leftRight);
+        for(var k = 0; k < nthchildindex; k++){
+          allcards2[k].style.opacity = 1;
+        }
+        allcards2[nthchildindex].style.position = "relative";
+        if(leftRight != 0)
+          allcards2[nthchildindex].style.marginLeft = "-10vh"; //test
+        else
+          allcards2[nthchildindex].style.marginRight = "-10vh";
+        allcards2[nthchildindex].style.opacity = 1;
+      }
+
+      pile[i].onmouseout = function() {
+        console.log(leftRight);
+        for(var k  = 0; k < nthchildindex; k++){
+          allcards2[k].style.opacity = 0;
+        }
+        allcards2[nthchildindex].style.position = "absolute";
+        if(leftRight != 0){
+          allcards2[nthchildindex].style.marginLeft = "0"; //test
+          //allcards2[nthchildindex].style.marginLeft = "0"; //test
+          //console.log("bleh")
+        } else{
+          allcards2[nthchildindex].style.marginRight = "0";
+          allcards2[nthchildindex].style.right = "0";
+        }
+        allcards2[nthchildindex].style.opacity = 1;
       }
     }
+
+    /*
+    var nthchildindex = 6
+    var rightgreenpile = document.getElementById("green-pile").querySelectorAll(".cardpile")[1]
+    console.log(rightgreenpile);
+
+    var cardpileHovered = false;
+
+
+
+    rightgreenpile.onmouseover = function() {
+      cardpileHovered = true;
+      var allcards2 = rightgreenpile.querySelectorAll('.playedcardright')
+      for(i = 0; i < nthchildindex; i++){
+        allcards2[i].style.opacity = 1;
+      }
+      allcards2[nthchildindex].style.position = "relative";
+      allcards2[nthchildindex].style.marginLeft = "-10vh";
+      allcards2[nthchildindex].style.opacity = 1;
+    }
+
+    rightgreenpile.onmouseout = function() {
+      cardpileHovered = true;
+      var allcards2 = rightgreenpile.querySelectorAll('.playedcardright')
+      for(i = 0; i < nthchildindex; i++){
+        allcards2[i].style.opacity = 0;
+      }
+      allcards2[nthchildindex].style.position = "absolute";
+      allcards2[nthchildindex].style.marginLeft = "0";
+      allcards2[nthchildindex].style.opacity = 1;
+    }
+    */
+
+
 
     function PrefixedEvent(element, type, callback) {
       for (var p = 0; p < pfx.length; p++) {
@@ -454,9 +526,6 @@ var card0 = document.getElementsByClassName('card')[0],
         element.addEventListener(pfx[p]+type, callback, false);
       }
     }
-
-    card0.addEventListener("AnimationIteration",  AnimationListener, false);
-
 
     card0.onmouseover = function() {
       hovered = true;
@@ -469,7 +538,7 @@ card0.onmouseout = function() {
 }
 
 function clickFunction(lol){
-  console.log(lol);
+  console.log("regard");
   console.log(lol.id);
 }
 

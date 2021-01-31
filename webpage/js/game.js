@@ -96,6 +96,58 @@ function applyCardsDown(cardsDown) {
 		for (var i = 0; i < 10; i++)
 			upperCards[i].style.opacity = i + 11 <= thisPileVals[1] ? 1 : 0
 	}
+
+
+	var arrayOfLatestCards = []; //
+	for(var ii = 0; ii < 4; ii++){
+		for(var jj = 0; jj < 2; jj++){
+			arrayOfLatestCards.push(convertIDtoIndex(pileValues[ii][jj]))
+		}
+	}
+
+	console.log(arrayOfLatestCards)
+	var pile = document.getElementsByClassName("cardpile");
+	for(var j = 0; j < 8; j++){
+		const i = j
+
+		//get nth childindex from arrayofLatestCards
+		leftRightOG = i % 2;
+		console.log(leftRightOG);
+
+		if(arrayOfLatestCards[i] == -1){
+			continue;
+		}
+
+		const leftRight = leftRightOG;
+		const allcards2 = pile[i].querySelectorAll('.card')
+		pile[i].onmouseover = function() {
+			console.log(leftRight);
+			for(var k = 0; k < nthchildindex; k++){
+				allcards2[k].style.opacity = 1;
+			}
+			allcards2[nthchildindex].style.position = "relative";
+			if(leftRight != 0)
+				allcards2[nthchildindex].style.marginLeft = "-10vh"; //test
+			else
+				allcards2[nthchildindex].style.marginRight = "-10vh";
+			allcards2[nthchildindex].style.opacity = 1;
+		}
+
+		pile[i].onmouseout = function() {
+			console.log(leftRight);
+			for(var k  = 0; k < nthchildindex; k++){
+				allcards2[k].style.opacity = 0;
+			}
+			allcards2[nthchildindex].style.position = "absolute";
+			if(leftRight != 0)
+				allcards2[nthchildindex].style.marginLeft = "0";
+			else{
+				allcards2[nthchildindex].style.marginRight = "0";
+				allcards2[nthchildindex].style.right = "0";
+			}
+			allcards2[nthchildindex].style.opacity = 1;
+		}
+	}
 }
 function applyWinOrder(winOrder) {
 	// tf do I do here lmao
@@ -107,4 +159,14 @@ function applyGameState(myNumber,game) {
 	applyDeckAmt(game.deck.length)
 	applyCardsDown(game.cardsDown)
 	applyWinOrder(game.winOrder)
+}
+
+function convertIDtoIndex(num){
+	var toReturn
+	if (num > 10){
+		toReturn = num - 11;
+	} else{
+		toReturn = 9-num;
+	}
+	return toReturn
 }
