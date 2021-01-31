@@ -45,17 +45,17 @@ class Card {
 					return replaceIndex(i,this,cards)
 			}
 		}
-		return null
+		return undefined
 	}
 	canPlay(cards) {
-		return this.play(cards) != null
+		return this.play(cards) != undefined
 	}
 }
 
 class Game {
 	// dran = the person whose turn it is, adrian moment lol
 	// dranState: -1 if played a card, 0 if just starting turn, n if drawn n cards from deck
-	constructor(hands,dran,dranState,deck,cardsDown,winOrder,numChanges) {
+	constructor(hands,dran,dranState,deck,cardsDown,winOrder,numChanges,plrList) {
 		this.hands = hands
 		this.dran = dran
 		this.dranState = dranState
@@ -63,6 +63,7 @@ class Game {
 		this.cardsDown = cardsDown
 		this.winOrder = winOrder
 		this.numChanges = numChanges
+		this.plrList = plrList
 	}
 	numPlayers() {
 		return this.hands.length
@@ -81,16 +82,16 @@ class Game {
 	}
 	justEndTurn() {
 		if (!this.canEndTurn())
-			return null
+			return undefined
 		else if (this.dranEmptyHand() && !this.dranWon())
-			return new Game(this.hands,(this.dran + 1) % this.numPlayers(),0,this.deck,this.cardsDown,this.winOrder.concat(this.dran),this.numChanges+1)
+			return new Game(this.hands,(this.dran + 1) % this.numPlayers(),0,this.deck,this.cardsDown,this.winOrder.concat(this.dran),this.numChanges+1,this.plrList)
 		else
-			return new Game(this.hands,(this.dran + 1) % this.numPlayers(),0,this.deck,this.cardsDown,this.winOrder,this.numChanges+1)
+			return new Game(this.hands,(this.dran + 1) % this.numPlayers(),0,this.deck,this.cardsDown,this.winOrder,this.numChanges+1,this.plrList)
 	}
 	endTurn() {
 		const jft = this.justEndTurn()
-		if (this.gameIsOver() || jft == null)
-			return null
+		if (this.gameIsOver() || jft == undefined)
+			return undefined
 		else if (jft.dranWon())
 			return jft.finishTurn()
 		else
@@ -99,34 +100,34 @@ class Game {
 	playCard(i) {
 		const hand = this.hands[this.dran]
 		if (i >= hand.length)
-			return null
+			return undefined
 		const card = hand[i]
 		const newCardsDown = card.play(this.cardsDown)
-		if (newCardsDown == null)
-			return null
+		if (newCardsDown == undefined)
+			return undefined
 		const newHands = replaceIndex(this.dran,removeIndex(i,hand),this.hands)
-		return new Game(newHands,this.dran,-1,this.deck,newCardsDown,this.winOrder,this.numChanges+1)
+		return new Game(newHands,this.dran,-1,this.deck,newCardsDown,this.winOrder,this.numChanges+1,this.plrList)
 	}
 	cardIsPlayable(card) {
-		return card.play(this.cardsDown) !== null
+		return card.play(this.cardsDown) !== undefined
 	}
 	canPlayCard() {
 		for (i in this.hands[this.dran])
-			if (this.playCard(i) != null)
+			if (this.playCard(i) != undefined)
 				return true
 		return false
 	}
 	cardIsPlayable(card) {
-        return card.play(this.cardsDown) !== null
+        return card.play(this.cardsDown) !== undefined
     }
 	drawCard() {
 		if (this.canPlayCard() || this.canEndTurn())
-			return null
+			return undefined
 		const cardDrawn = this.deck[0]
 		const newHands = replaceIndex(this.dran,[cardDrawn].concat(this.hands[this.dran]),this.hands)
-		const added = new Game(newHands,this.dran,this.dranState+1,removeIndex(0,this.deck),this.cardsDown,this.winOrder,this.numChanges+1)
+		const added = new Game(newHands,this.dran,this.dranState+1,removeIndex(0,this.deck),this.cardsDown,this.winOrder,this.numChanges+1,this.plrList)
 		const played = added.playCard(0)
-		if (played != null)
+		if (played != undefined)
 			return played
 		else
 			return added
@@ -139,7 +140,7 @@ function cardFromObj(obj) { // make Card from an obj that doesnt have methods
 function gameFromObj(obj) { // make Game from an obj that doesnt have methods
 	const hands = obj.hands.map((x) => x.map(cardFromObj))
 	const deck = obj.deck.map(cardFromObj)
-	return new Game(hands,obj.dran,obj.dranState,deck,obj.cardsDown,obj.winOrder,obj.numChanges)
+	return new Game(hands,obj.dran,obj.dranState,deck,obj.cardsDown,obj.winOrder,obj.numChanges,obj.plrList)
 }
 function gameFromJSON(str) {
 	return gameFromObj(JSON.parse(str))
@@ -163,8 +164,9 @@ function firstDran(hands) {
 	return Math.floor(Math.random()*hands.length)
 }
 
-function generateGame(numPlayers) {
-	if (numPlayers > 6) return null
+function generateGame(plrList) {
+	const numPlayers = plrList.length
+	if (numPlayers < 2 || numPlayers > 6) return undefined
 
 	const numCardsToDeal = 60 / numPlayers
 	const deck = [...allCards]
@@ -172,5 +174,5 @@ function generateGame(numPlayers) {
 	const hands = []
 	for (var i = 0; i < numPlayers; i++)
 		hands.splice(i,0,deck.splice(0,numCardsToDeal))
-	return new Game(hands,firstDran(hands),0,deck,[],[],0)
+	return new Game(hands,firstDran(hands),0,deck,[],[],0,plrList)
 }
