@@ -152,7 +152,7 @@ function firstDran(hands) {
 			for (cardIndex in hands[dran]) {
 				const card = hands[dran][cardIndex]
 				if (card.suit == suit && card.number == 10)
-					return dran
+					return parseInt(dran)
 			}
 	return Math.floor(Math.random()*hands.length)
 }
