@@ -18,11 +18,11 @@ eval(fs.readFileSync("../raus.js").toString())
 function serveJustGame(numPlayers, msgToClient, gameOver, plrList) {
 	let game = generateGame(plrList)
 
-	const bumpPlayer = (plrNum) => msgToClient(plrNum,JSON.stringify(game))
+	const bumpPlayer = (plrNum) => msgToClient(plrNum,"gameState " + plrNum + " " + JSON.stringify(game))
 	const bumpAllPlayers = () => {
 		const ser = JSON.serialize(game)
 		for (var i = 0; i < numPlayers; i++)
-			msgToClient(i,ser)
+			msgToClient(i,"gameState " + i + " " + ser)
 	}
 
 	return [(plrNum, msg) => {
