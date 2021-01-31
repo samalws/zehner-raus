@@ -1,6 +1,3 @@
-socket = null
-
-
 suitNames = ["green","teal","pink","yellow"]
 
 function makeHandCard() {
@@ -179,27 +176,4 @@ function convertIDtoIndex(num){
 	}
 	return toReturn
 }
-
-function loadSocket() {
-	socket = new WebSocket("ws://localhost:8080")
-	socket.onopen = () => { console.log("websocket connected") }
-	socket.onmessage = (event) => {
-		if (event.data.substring(0,"gameState ".length) == "gameState ") {
-			const after = event.data.substring("gameState ".length)
-			let nextSpace = 0
-			while (nextSpace < after.length && after[nextSpace] != " ") nextSpace++
-			myNumber = parseInt(after.substring(0,nextSpace))
-			gameState = Game.fromJSON(after.substring(nextSpace+1))
-			applyGameState(myNumber,gameState)
-		}
-	}
-	socket.onclose = (event) => {
-		console.log("connection closed, wasClean = " + event.wasClean)
-		loadSocket()
-	}
-	socket.onerror = (event) => {
-		console.log("error " + event.message)
-	}
-}
-//loadSocket()
 

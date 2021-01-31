@@ -1,3 +1,9 @@
+whichPageLoaded = "main"
+
+
+
+applyGameState(gameInfo[0],gameInfo[1])
+
 /*jry bits and bobs from here on out lol*/
 console.log("main.js loaded")
 
