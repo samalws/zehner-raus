@@ -68,6 +68,7 @@ body{
 }
 
 .hand{
+  border: 3px solid white;
   position: absolute;
   bottom: 5px;
   height: 15%;
@@ -169,7 +170,7 @@ body{
 
 
 .card:hover {
-  transform: scale(1.5) !important; /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  transform: scale(1.2) !important; /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
   z-index: 9001;
 }
 
@@ -181,8 +182,7 @@ body{
 
 .board{
   border: 3px solid white;
-  padding-top: 3.5vh;
-  padding-bottom: 3.5vh;
+  padding-top: 1vh;
   display: grid;
   position: absolute;
   height: 75%;
@@ -224,11 +224,15 @@ body{
   border: 3px solid white;
 }
 
-.playedcardright{
-  float: right;
-}
 .playedcardleft{
+  margin-right: -10vh;
+  float: right;
+  opacity: 0;
+  z-index: 0;
+  transition-duration: 0s;
+}
 
+.playedcardright{
   margin-left: -10vh;
   float: left;
   opacity: 0;
@@ -236,35 +240,42 @@ body{
   transition-duration: 0s;
 }
 
-
-
 .cardpile .playedcardleft:first-child{
-  margin-left: 0;
-  float:left;
+  margin-right: 0;
 }
-.playedcardleft:last-child{
+
+.cardpile .playedcardleft:last-child{
   position: absolute;
-  margin-left: 0;
-  opacity: 1;
+  margin-right: 0;
   z-index: 9002;
 }
 
-.cardpile:hover > .playedcardleft{
+.cardpile .playedcardright:first-child{
+  margin-left: 0;
+}
+
+.playedcardright:last-child{
+  position: absolute;
+  margin-left: 0;
+  z-index: 9002;
+}
+
+.cardpile:hover > .playedcardright, .cardpile:hover > .playedcardleft{
   opacity: 1;
 }
 
-.cardpile:hover > .playedcardleft:last-child{
+.cardpile:hover > .playedcardright:last-child{
   position: relative;
   margin-left: -10vh;
 }
 /*
-.cardpile .playedcardleft:last-child:hover{
+.cardpile .playedcardright:last-child:hover{
 
   margin-left: 12vh;
 }
 */
 
-.playedcardleft: hover{
+.playedcardright: hover{
   z-index: 0;
 }
 
@@ -278,7 +289,7 @@ body{
     border: 3px solid red;
   }
   50% {
-    transform: translate(0, -10%) scale(1.1);
+    transform: translate(0, -5%) scale(1.1);
     border: 3px solid blue;
   }
   100% {
