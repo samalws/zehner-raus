@@ -75,70 +75,208 @@ function serveGameWithExtraStuff(conns,doneCallback) {
 	}
 }
 
-function connListener(conn,lobbies) {
-	// TODO what if stuff errors
-	let myLobby = null
-	let myLobbyName = null
-	conn.on("message",(msg) => {
+function userIsInALobby(conn,lobbies) {
+	return lobbies.connToLobby[conn] !== null
+}
+function makeUserId(lobbyId,lobbies) {
+	const lobby = lobbies[lobbyId]
+	const idsTaken = []
+	lobby.foreach((user) => idsTaken.splice(0,0,user.id))
+	while (true) {
+		const tryId = Math.floor(Math.random()*999999)
+		if (!idsTaken.includes(tryId))
+			return tryId	
+	}
+}
+function makeLobbyId(lobbies) {
+	while (true) {
+		const tryId = Math.floor(Math.random()*999999)
+		if (lobbies[tryId] === null)
+			return tryId
+	}
+}
+funcion lobbyToString(lobby) {
+	const lobby2 = lobby.map(function (user) {
+		const user2 = {}
+		// notably no conn
+		user2.name = user.name
+		user2.id = user.id
+	})
+	return JSON.stringify(lobby2)
+}
+function userIdInLobby(conn,lobbyId,lobbies) {
+	const lobby = lobbies[lobbyId]
+	for (i in lobby)
+		if (lobby[i].conn == conn)
+			return i
+	return null
+}
+function broadcastLobbyInfo(lobbyId,lobbies) {
+	const s = lobbyToString(lobbies[lobbyId])
+	for (i in lobby)
+		lobby[i].conn.send("yourLobby " + lobbyId + " " + i + " " + s)
+}
+function giveUserLobbyInfo(conn,lobbies) {
+	if (!userIsInALobby(conn,lobbies))
+		conn.send("ur not in a lobby kekl")
+	else {
+		const lobbyId = lobbies.connToLobby[conn]
+		const lobby = lobbies[lobbyId]
+		const i = userIdInLobby(conn,lobbyId,lobbies)
+		const s = lobbyToString(lobbies[lobbyId])
+		conn.send("yourLobby " + lobbyId + " " + i + " " + s)
+	}
+}
+function removePlrFromLobby(conn,lobbies) {
+	const lobbyId = lobbies.connToLobby[conn]
+	if (lobbyId === null)
+		return null
 
+	const lobby = lobbies[lobbyId]
+	let userIndexInLobby = userIdInLobby(conn,lobbyId,lobbies)
+	if (userIndexInLobby === null)
+		return null
 
-		if (msg == "leaveLobby" && myLobby != null) {
-			let myIndex = NaN
-			for (i in lobbies[myLobby])
-				if (lobbies[myLobby][i][0] == conn)
-					myIndex = i
-				else
-					lobbies[myLobby][i][0].send("plrLeaving "+myLobbyName)
-			myLobby = null
-			myLobbyName = null
-			conn.send("left lobby")
+	lobbies.connToLobby[conn] = null
 
+	giveUserLobbyInfo(conn,lobbies)
+	broadcastLobbyInfo(lobbyId,lobbies)
 
-		} else if (msg.substring(0,"joinLobby ".length) == "joinLobby ") {
-			const n = parseInt(msg.substring("joinLobby ".length).split(","))
-			// TODO oh god mutex stuff
-			if (n !== NaN) { // TODO oh god oh fuck names
-				let myNameTaken = false
-				for (i in lobbies[n])
-					if (i[1] == name) {
-						myNameTaken = true
-						break
-					}
-				if (!myNameTaken) {
-					for (i in lobbies[n])
-						lobbies[myLobby][i][0].send("plrJoining "+name)
-					lobbies[myLobby] = lobbies[myLobby].concat([conn,name])
-					myLobby = n
-					myLobbyName = name
-					conn.send("joined lobby")
-				}
-			}
+	if (lobby.length == 0)
+		removeLobby(lobbyId,lobbies)
 
+	return true
+}
+function removeLobby(lobbyId,lobbies) {
+	const lobby = lobbies[lobbyId]
+	if (lobby === null)
+		return
+	while (lobby.length > 0)
+		removePlrFromLobby(lobby[0].conn,lobbies)
+	lobbies[lobbyId] = null
+}
+function addPlrToLobby(conn,lobbyId,lobbies) { // return plr's id
+	if (userIsInALobby(conn,lobbies))
+		return null
 
-		} else if (msg.substring(0,"startLobby ".length) == "startLobby ") {
-			
+	const lobby = lobbies[lobbyId]
+	const user = {}
+	user.conn = conn
+	user.name = "unnamed friend"
+	user.id = makeUserId(lobbyId,lobbies)
+	lobby.splice(lobby.length,0,user)
 
+	lobbies.connToLobby[conn] = lobbyId
 
-		} else if (msg == "startGame") {
-			let plrNamesString = ""
-			const connsList = []
-			for (i in lobbies[myLobby]) {
-				const name = lobbies[myLobby][i][1]
-				plrNamesString += ""+name.length+":"+name
-				connsList = connsList.concat(lobbies[myLobby][i][0])
-			}
-			for (i in lobbies[myLobby])
-				lobbies[myLobby][i].send("starting game "+plrNamesString)
-			serveGameWithExtraStuff(connsList,() => ()) // TODO done callback
+	broadcastLobbyInfo(lobbyId,lobbies)
+
+	return user.id
+}
+function addLobby(conn,lobbies) { // return [user id,lobby id]
+	if (userIsInALobby(conn,lobbies))
+		return null
+
+	const lobbyId = makeLobbyId(lobbies)
+	if (lobbies[lobbyId] !== null)
+		return null
+	lobbies[lobbyId] = []
+	const userId = addPlrToLobby(conn,lobbyId,lobbies)
+	if (userId === null) {
+		removeLobby(lobbyId,lobbies)
+		return null
+	}
+	return [userId,lobbyId]
+}
+function changeName(conn,name,lobbies) {
+	const lobbyId = lobbies.connToLobby[conn]
+	if (lobbyId === null)
+		return null
+
+	const lobby = lobbies[lobbyId]
+	for (i in lobby)
+		if (lobby[i].conn == conn) {
+			lobby[i].name = name
+			break
 		}
+
+	broadcastLobbyInfo(lobbyId,lobbies)
+
+	return true
+}
+function startGame(conn,lobbies) {
+	const lobbyId = lobbies.connToLobby[conn]
+	if (lobbyId === null)
+		return null
+
+	const lobby = lobbies[lobbyId]
+	if (lobby.length < 2 || lobby.length > 6)
+		return null
+	const conns = []
+	for (i in lobby)
+		conns = conns.concat(lobby[i].conn)
+	removeLobby(lobbyId,lobbies)
+	serveGameWithExtraStuff(conns,() => ()) // TODO done callback
+}
+function chatInLobby(conn,chat,lobbies) {
+	const lobbyId = lobbies.connToLobby[conn]
+	if (lobbyId === null)
+		return null
+
+	const lobby = lobbies[lobbyId]
+
+	const userId = null
+	for (i in lobby)
+		if (lobby[i].conn == conn) {
+			userId= i
+			break
+		}
+	if (userId === null)
+		return null
+	for (i in lobby)
+		lobby[i].conn.send("lobbyChat " + userId + " " + chat)
+}
+function removeEmptyLobbies(lobbies) {
+	for (lobbyId in lobbies)
+		if (lobbyId != "connToLobby" && lobbies[lobbyId].length == 0)
+			removeLobby(lobbyId,lobbies)
+}
+function lobbyListenConn(conn,lobbies) {
+	conn.on("message",function(msg) {
+		let returnVal = null
+		if (msg == "leaveLobby")
+			returnVal = removePlayerFromLobby(conn,lobbies)
+		else if (msg.substring(0,"joinLobby ".length) == "joinLobby ") {
+			restOfMsg = parseInt(msg.substring("joinLobby ".length))
+			if (lobbies[restOfMsg] !== null)
+				returnVal = addPlrToLobby(conn,restOfMsg,lobbies)
+		} else if (msg == "addLobby")
+			returnVal = addLobby(conn,lobbies)
+		else if (msg.substring(0,"changeName ".length) == "changeName ") {
+			restOfMsg = msg.substring("changeName ".length)
+			returnVal = changeName(conn,restOfMsg,lobbies)
+		} else if (msg == "startGame")
+			returnVal = startGame(conn,lobbies)
+		else if (msg.substring(0,"lobbyChat ".length) == "lobbyChat ") {
+			restOfMsg = msg.substring("lobbyChat ".length)
+			returnVal = chatInLobby(conn,restOfMsg,lobbies)
+		} else if (msg != "lobbyStatus") {
+			returnVal = true // didn't try a lobby command, so we don't tell them lobby info
+		}
+		if (returnVal === null)
+			giveUserLobbyInfo(conn,lobbies)
 	})
 }
-function serveSocket(socket) {
-	const lobbies = []
-	const games = []
 
-	socket.on("connection", connListener)
+function serveSocket(socket) {
+	const lobbies = {}
+	lobbies.connToLobby = {}
+
+	socket.on("connection", (conn) => lobbyListenConn(conn, lobbies))
 }
 
-//let game = generateGame(6)
-//console.log(gameFromJSON(JSON.stringify(game)))
+function main() {
+	const server = new WebSocket.Server({ port: 8080 })
+	server.on("connection",serveSocket)
+}
+
+main()
