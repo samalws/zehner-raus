@@ -223,11 +223,11 @@ function addPlrToLobby(conn,lobbyId,lobbies) { // return plr's id
 
 	return user.id
 }
-function addLobby(conn,lobbies,id) { // return [user id,lobby id]
+function addLobby(conn,lobbies) { // return [user id,lobby id]
 	if (userIsInALobby(conn,lobbies))
 		return undefined
 
-	const lobbyId = id !== undefined ? id : makeLobbyId(lobbies)
+	const lobbyId = makeLobbyId(lobbies)
 	if (lobbies[lobbyId] !== undefined)
 		return undefined
 	lobbies[lobbyId] = []
@@ -294,6 +294,7 @@ function removeEmptyLobbies(lobbies) {
 			removeLobby(lobbyId,lobbies)
 }
 function lobbyListenConn(conn,lobbies) {
+	console.log("new connection")
 	conn.on("message",function(msg) {
 		let returnVal = undefined
 		if (msg == "leaveLobby")
@@ -302,8 +303,6 @@ function lobbyListenConn(conn,lobbies) {
 			restOfMsg = parseInt(msg.substring("joinLobby ".length))
 			if (lobbies[restOfMsg] !== undefined)
 				returnVal = addPlrToLobby(conn,restOfMsg,lobbies)
-			else
-				returnVal = addLobby(conn,lobbies,restOfMsg)
 		} else if (msg == "addLobby")
 			returnVal = addLobby(conn,lobbies)
 		else if (msg.substring(0,"changeName ".length) == "changeName ") {

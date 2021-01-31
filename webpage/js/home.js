@@ -14,6 +14,10 @@ function sendVals(){
   socket.send("joinLobby "+vals[0])
   setTimeout(1000,() => socket.send("changeName "+vals[1]))
 }
+function sendVals2(){
+  vals = getVals();
+  socket.send("addLobby")
+  setTimeout(1000,() => socket.send("changeName "+vals[1]))
 
 function loadLobby() {
   newHTML = lobbybody
