@@ -29,15 +29,17 @@ body{
   /*box-shadow: 0 0 0 3px teal;*/
   height: 17.5vh;
   width: 12.5vh;
-  line-height: 3vh;
+  line-height: 3.5vh;
   margin-left: auto;
   margin-right: auto;
   transition-duration: 0.25s;
   background-color: white;
   border-radius: 12px;
   color: black;
-  animation: highlighted 3s infinite;
+
 }
+
+
 
 .hand{
   position: absolute;
@@ -108,22 +110,25 @@ body{
 .center_text {
   font-family: 'Squada One';
   display:block;
-  font-size: 350%;
-  height:100%
+  font-size: 500%;
+  height:100%;
   width:100%;
   text-align:center;
+  line-height: 100%;
 }
 
-
+#sample_green{
+  animation: highlighted 3s infinite;
+}
 
 .card:hover {
-  transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  transform: scale(1.5) !important; /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
   z-index: 9001;
 }
 
 
 .hand .card:hover{
-  transform: translate(0, -25%) scale(1.5);
+  transform: translate(0, -25%) scale(1.5) !important;
   z-index: 9001;
 }
 
