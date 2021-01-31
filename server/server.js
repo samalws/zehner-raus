@@ -96,8 +96,29 @@ function serveGameWithExtraStuff(plrs,doneCallback) {
 	}
 }
 
+function connToLobbyIndex(conn,lobbies) {
+	for (var i = 0; i < lobbies.length; i++)
+		if (lobbies.connToLobby[i][0] == conn)
+			return i
+	return undefined
+}
+function connToLobbyVal(conn,lobbies) {
+	return lobbies.connToLobby[connToLobbyIndex(conn,lobbies)][1]
+}
+function removeFromConnToLobby(conn,lobbies) {
+	const i = connToLobbyIndex(conn,lobbies)
+	if (i !== undefined)
+		delete lobbies.connToLobby[i]
+}
+function setConnToLobby(conn,val,lobbies) {
+	const i = connToLobbyIndex(conn,lobbies)
+	if (i !== undefined)
+		lobbies.connToLobby[i][1] = val
+	else
+		lobbies.connToLobby.splice(lobbies.connToLobby.length,0,[conn,val])
+}
 function userIsInALobby(conn,lobbies) {
-	return lobbies.connToLobby[conn] !== undefined
+	return connToLobbyIndex(conn,lobbies) !== undefined
 }
 function makeUserId(lobbyId,lobbies) {
 	const lobby = lobbies[lobbyId]
@@ -127,7 +148,7 @@ function lobbyToSerializable(lobby) {
 	return lobby2
 }
 function lobbyToString(lobby) {
-	return JSON.stringify(lobbyToSerializable(lobby2))
+	return JSON.stringify(lobbyToSerializable(lobby))
 }
 function userIdInLobby(conn,lobbyId,lobbies) {
 	const lobby = lobbies[lobbyId]
@@ -146,7 +167,7 @@ function giveUserLobbyInfo(conn,lobbies) {
 	if (!userIsInALobby(conn,lobbies))
 		conn.send("ur not in a lobby kekl")
 	else {
-		const lobbyId = lobbies.connToLobby[conn]
+		const lobbyId = connToLobbyVal(conn,lobbies)
 		console.log(lobbyId)
 		const lobby = lobbies[lobbyId]
 		const i = userIdInLobby(conn,lobbyId,lobbies)
@@ -155,7 +176,7 @@ function giveUserLobbyInfo(conn,lobbies) {
 	}
 }
 function removePlrFromLobby(conn,lobbies) {
-	const lobbyId = lobbies.connToLobby[conn]
+	const lobbyId = connToLobbyVal(conn,lobbies)
 	if (lobbyId === undefined)
 		return undefined
 
@@ -165,7 +186,7 @@ function removePlrFromLobby(conn,lobbies) {
 		return undefined
 	lobby.splice(userIndexInLobby,1)
 
-	delete lobbies.connToLobby[conn]
+	removeFromConnToLobby(conn,lobbies)
 
 	giveUserLobbyInfo(conn,lobbies)
 	broadcastLobbyInfo(lobbyId,lobbies)
@@ -194,7 +215,7 @@ function addPlrToLobby(conn,lobbyId,lobbies) { // return plr's id
 	user.id = makeUserId(lobbyId,lobbies)
 	lobby.splice(lobby.length,0,user)
 
-	lobbies.connToLobby[conn] = lobbyId
+	setConnToLobby(conn,lobbyId,lobbies)
 
 	broadcastLobbyInfo(lobbyId,lobbies)
 
@@ -216,7 +237,7 @@ function addLobby(conn,lobbies) { // return [user id,lobby id]
 	return [userId,lobbyId]
 }
 function changeName(conn,name,lobbies) {
-	const lobbyId = lobbies.connToLobby[conn]
+	const lobbyId = connToLobbyVal(conn,lobbies)
 	if (lobbyId === undefined)
 		return undefined
 
@@ -232,7 +253,7 @@ function changeName(conn,name,lobbies) {
 	return true
 }
 function startGame(conn,lobbies) {
-	const lobbyId = lobbies.connToLobby[conn]
+	const lobbyId = connToLobbyVal(conn,lobbies)
 	if (lobbyId === undefined)
 		return undefined
 
@@ -246,7 +267,7 @@ function startGame(conn,lobbies) {
 	serveGameWithExtraStuff(conns,() => {})
 }
 function chatInLobby(conn,chat,lobbies) {
-	const lobbyId = lobbies.connToLobby[conn]
+	const lobbyId = connToLobbyVal(conn,lobbies)
 	if (lobbyId === undefined)
 		return undefined
 
@@ -319,9 +340,9 @@ function safeifyConn(conn) {
 }
 function serveSocket(socket) {
 	const lobbies = {}
-	lobbies.connToLobby = {}
+	lobbies.connToLobby = []
 
-	socket.on("connection", (conn) => lobbyListenConn(safeifyConn(conn), lobbies))
+	socket.on("connection", (conn,req) => { lobbyListenConn(safeifyConn(conn), lobbies) })
 }
 
 function main() {
