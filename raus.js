@@ -107,6 +107,9 @@ class Game {
 		const newHands = replaceIndex(this.dran,removeIndex(i,hand),this.hands)
 		return new Game(newHands,this.dran,-1,this.deck,newCardsDown,this.winOrder,this.numChanges+1)
 	}
+	cardIsPlayable(card) {
+		return card.play(this.cardsDown) !== null
+	}
 	canPlayCard() {
 		for (i in this.hands[this.dran])
 			if (this.playCard(i) != null)

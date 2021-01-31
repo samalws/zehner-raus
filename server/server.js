@@ -14,6 +14,7 @@ eval(fs.readFileSync("../raus.js").toString())
 // takes function to alert a player with a given number about a thing
 // also takes a game over callback, which it calls with the finished game
 // returns function for when a client sends a thing
+// also returns a function to get the current game
 function serveJustGame(numPlayers, msgToClient, gameOver) {
 	let game = generateGame(numPlayers)
 
@@ -24,7 +25,7 @@ function serveJustGame(numPlayers, msgToClient, gameOver) {
 			msgToClient(i,ser)
 	}
 
-	return (plrNum, msg) => {
+	return [(plrNum, msg) => {
 		let alreadyBumpedPlayer = false
 		if (plrNum == game.dran) {
 			let newGame = null
@@ -47,31 +48,48 @@ function serveJustGame(numPlayers, msgToClient, gameOver) {
 		}
 		if (!alreadyBumpedPlayer)
 			bumpPlayer(plrNum)
-	}
+	}, () => game]
 }
 
 function serveGameWithExtraStuff(conns,doneCallback) {
-	// TODO what if someone disconnects
-
 	const numPlayers = conns.length
 	const msgToClient = ((plrNum, msg) => conns[plrNum].send("0" + msg))
-	const gameOver = ((finalGame) => console.log("ok game over what do i do now"))
+	var msgHandler = null
+	var disconnectHandler = null
+	const gameOver = ((finalGame) => {
+		for (plrNum in conns) {
+			const conn = conns[plrNum]
+			conn.removeListner("message",msgHandler)
+			conn.removeListner("disconnect",disconnectHandler)
+			conn.send("gameOver ",JSON.serialize(finalGame))
+		}
+		doneCallback()
+	})
 
-	const receivedMsgEvent = serveGameAbstract(numPlayers, msgToClient, gameOver)
+	const callbacks = serveGameAbstract(numPlayers, msgToClient, gameOver)
+	const receivedMsgEvent = callbacks[0]
+	const getGame = callbacks[1]
+
+	msgHandler = (msg) => {
+		const msg1 = msg.substring(5)
+		switch (msg.substring(0,5)) {
+		case "move ": // make a move / ask for game state
+			receivedMsgEvent(plrNum, msg1)
+			break
+		case "chat ": // chat
+			for (var i = 0; i < numPlayers; i++)
+				conns[plrNum].send("1" + plrNum + ":" + msg1))
+			break
+		case "quit ": // quit
+			gameOver(getGame())
+		}
+	}
+	disconnectHandler = () => gameOver(getGame())
 
 	for (plrNum in conns) {
 		const conn = conns[plrNum]
-		conn.on("message",(msg) => {
-			const msg1 = msg.substring(1)
-			switch (msg[0]) {
-			case "0": // make a move / ask for game state
-				receivedMsgEvent(plrNum, msg1)
-				break
-			case "1": // chat
-				for (var i = 0; i < numPlayers; i++)
-					conns[plrNum].send("1" + plrNum + ":" + msg1))
-			}
-		})
+		conn.on("message",msgHandler)
+		conn.on("disconnect",disconnectHandler)
 	}
 }
 
@@ -215,7 +233,7 @@ function startGame(conn,lobbies) {
 	for (i in lobby)
 		conns = conns.concat(lobby[i].conn)
 	removeLobby(lobbyId,lobbies)
-	serveGameWithExtraStuff(conns,() => ()) // TODO done callback
+	serveGameWithExtraStuff(conns,() => ())
 }
 function chatInLobby(conn,chat,lobbies) {
 	const lobbyId = lobbies.connToLobby[conn]
@@ -265,13 +283,32 @@ function lobbyListenConn(conn,lobbies) {
 		if (returnVal === null)
 			giveUserLobbyInfo(conn,lobbies)
 	})
+	conn.on("disconnect",() => removePlrFromLobby(conn,lobbies))
 }
 
+function safeifyConn(conn) {
+	const newConn = {}
+	newConn.send = (a) => {
+		try {
+			conn.send(a)
+		} catch (e) {}
+	}
+	newConn.on = (a,b) => {
+		try {
+			conn.on(a,b)
+		} catch (e) {}
+	}
+	newConn.removeListener(a,b) => {
+		try {
+			conn.removeListener(a,b)
+		} catch (e) {}
+	}
+}
 function serveSocket(socket) {
 	const lobbies = {}
 	lobbies.connToLobby = {}
 
-	socket.on("connection", (conn) => lobbyListenConn(conn, lobbies))
+	socket.on("connection", (conn) => lobbyListenConn(safeifyConn(conn), lobbies))
 }
 
 function main() {
