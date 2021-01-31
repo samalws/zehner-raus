@@ -4,23 +4,56 @@
 <head>
 	<meta charset="utf-8">
 	<title>Zehner Raus!</title>
+	<audio id="beep-sound" src="assets/ding.mp3"></audio>
+
 	<link rel="stylesheet" href="css/lobby_styles.css?v=1.0">
+	<link href='https://fonts.googleapis.com/css?family=Roboto Mono' rel='stylesheet'>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Squada+One&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
-
 	<img class = "logo" src = "assets/zehner_raus_logo.png">
 	</img>
 
+	<div class = "inputName" id = "inputName">
+		Current Name:<br>
+		<input class = "textbox" 	type ="text" placeholder = "Current Name" id = "name" value = "Current Name">
+	</div>
+
 	<div class="startbutton">
-		<button id="start">Start</button>
+		<button id="start" onclick="sendVals()">Start</button>
 	</div>
 
-	<div class = "toGame"
-		<input class = "textbox" type ="text" placeholder = "Insert Game ID" id = "gameID">
-	</div>
+	<div class = "playerlist" id = "playerlist">
+    Playerlist: <br>
+    U R: [name here] <br>
+		U R: [name here] <br>
+		U R: [name here] <br>
+		U R: [name here] <br>
+		U R: [name here] <br>
+		U R: [name here] <br>
+  </div>
 
-	<script></script>
+	<div class = "chatbox">
+    Chat!
+    <button class = "beep" id = "beep" onclick="ding()">Ding!</button>
+
+    <div class = "actualchat" id = "actualchat">
+      Welcome to the chat! <br>
+    </div>
+    <div class="send-message">
+      <input type="text" placeholder=" Type here!" id="send_message">
+      <button type="submit" id = "submit_button" onclick="javascript:alert('send message now!')">Send</button>
+    </div>
+  </div>
+
+	<script>
+
+
+	</script>
+	<script src = "js/lobby.js"></script>
 
 </body>
 

@@ -15,14 +15,6 @@ body{
   height: 20%;
 }
 
-.chatbox{
-  position: absolute;
-  left: 5px;
-  top: 25%;
-  width: 20%;
-  height: 50%;
-}
-
 .card{
   position: relative;
   font-family: 'Courier';
@@ -37,7 +29,7 @@ body{
   background-color: white;
   border-radius: 12px;
   color: black;
-
+  z-index: 2;
 }
 
 .drawpile {
@@ -84,12 +76,14 @@ body{
 }
 
 .playerlist{
+  white-space: nowrap;
   position: absolute;
-  border: 3px solid;
+  border: 0.1em solid;
   right: 5px;
   top: 5px;
-  height: 7em;
-  width: 25vh;
+  height: 9.5em;
+  width: 20vw;
+  text-align: center;
 }
 
 
@@ -122,8 +116,9 @@ body{
 .actualchat{
   height: 45vh;
   width: 20vw;
-  overflow: auto;
+  overflow-y: auto;
   padding: 0;
+  word-wrap: break-word;
 }
 
 .send-message input{
@@ -139,6 +134,15 @@ body{
   border: 0;
   padding: 0;
 }
+
+.beep{
+  position: absolute;
+  z-index: 1000;
+  width: 30%;
+  right: 0;
+  line-height: 1em;
+}
+
 .corner_text {
   font-family: 'Squada One';
   position: relative;
@@ -229,7 +233,7 @@ body{
   float: right;
   opacity: 0;
   z-index: 0;
-  transition-duration: 0s;
+  transition-duration: 0.25s;
 }
 
 .playedcardright{
@@ -237,7 +241,7 @@ body{
   float: left;
   opacity: 0;
   z-index: 0;
-  transition-duration: 0s;
+  transition-duration: 0.25s;
 }
 .cardpile .playedcardleft:first-child{
   margin-right: 0;
@@ -297,4 +301,8 @@ body{
     transform: translate(0, 0) scale(1);
     border: 3px solid red;
   }
+}
+
+.center-card{
+  z-index: 10;
 }
