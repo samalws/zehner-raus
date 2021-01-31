@@ -104,6 +104,8 @@ function connToLobbyIndex(conn,lobbies) {
 	return undefined
 }
 function connToLobbyVal(conn,lobbies) {
+	if (lobbies.connToLobby[connToLobbyIndex(conn,lobbies)] === undefined)
+		return undefined
 	return lobbies.connToLobby[connToLobbyIndex(conn,lobbies)][1]
 }
 function removeFromConnToLobby(conn,lobbies) {
