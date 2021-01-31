@@ -1,5 +1,6 @@
 // npm install ws
 
+const http = require("http")
 const ws = require("ws")
 const fs = require("fs")
 
@@ -168,7 +169,6 @@ function giveUserLobbyInfo(conn,lobbies) {
 		conn.send("ur not in a lobby kekl")
 	else {
 		const lobbyId = connToLobbyVal(conn,lobbies)
-		console.log(lobbyId)
 		const lobby = lobbies[lobbyId]
 		const i = userIdInLobby(conn,lobbyId,lobbies)
 		const s = lobbyToString(lobbies[lobbyId])
@@ -346,8 +346,15 @@ function serveSocket(socket) {
 }
 
 function main() {
-	const server = new ws.Server({ port: 8080 })
-	serveSocket(server)
+	pageText = "example page"
+	const htServer = http.createServer((req,res) => {
+		res.writeHead(200)
+		res.end(pageText)
+	})
+	htServer.listen(80,() => {})
+
+	const wsServer = new ws.Server({ server: htServer, path:"/ws" })
+	serveSocket(wsServer)
 }
 
 main()
