@@ -466,68 +466,12 @@ var card0 = document.getElementsByClassName('card')[0],
       }
     }
 
-    /*
-    var nthchildindex = 6
-    var rightgreenpile = document.getElementById("green-pile").querySelectorAll(".cardpile")[1]
-    console.log(rightgreenpile);
-
-    var cardpileHovered = false;
-
-
-
-    rightgreenpile.onmouseover = function() {
-      cardpileHovered = true;
-      var allcards2 = rightgreenpile.querySelectorAll('.playedcardright')
-      for(i = 0; i < nthchildindex; i++){
-        allcards2[i].style.opacity = 1;
-      }
-      allcards2[nthchildindex].style.position = "relative";
-      allcards2[nthchildindex].style.marginLeft = "-10vh";
-      allcards2[nthchildindex].style.opacity = 1;
-    }
-
-    rightgreenpile.onmouseout = function() {
-      cardpileHovered = true;
-      var allcards2 = rightgreenpile.querySelectorAll('.playedcardright')
-      for(i = 0; i < nthchildindex; i++){
-        allcards2[i].style.opacity = 0;
-      }
-      allcards2[nthchildindex].style.position = "absolute";
-      allcards2[nthchildindex].style.marginLeft = "0";
-      allcards2[nthchildindex].style.opacity = 1;
-    }
-    */
-
-
-
-    function PrefixedEvent(element, type, callback) {
-      for (var p = 0; p < pfx.length; p++) {
-        if (!pfx[p]) type = type.toLowerCase();
-        element.addEventListener(pfx[p]+type, callback, false);
-      }
-    }
-
-    card0.onmouseover = function() {
-      hovered = true;
-      console.log("hovering!")
-    }
-card0.onmouseout = function() {
-  setTimeout(function() { hovered = false; }, 500);
-  card0.addEventListener("TransitionEnd",  TransitionListener, false);
-  card0.style.transform = 'scale(1)';
-}
 
 function clickFunction(lol){
   console.log("regard");
   console.log(lol.id);
 }
 
-/*
-document.getElementsByClassName("card").addEventListener("click", clickFunction);
-function clickFunction(){
-
-}
-*/
 
 </script>
 <script src="js/main.js"></script>
