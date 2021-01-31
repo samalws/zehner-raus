@@ -7,6 +7,8 @@
   <!--
   <meta name="A game lol" content="A game lol">
 -->
+  <audio id="beep-sound" src="assets/ding.mp3"></audio>
+
 
   <link rel="stylesheet" href="css/main.css?v=1.0">
   <link href='https://fonts.googleapis.com/css?family=Roboto Mono' rel='stylesheet'>
@@ -21,40 +23,11 @@
   <img class = "logo" src = "assets/zehner_raus_logo.png" alt = "Zehner Raus Logo">
   </img>
   <div class = "chatbox">
-    Chat here you bozos!
-    <div class = "actualchat">
-      lol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lollol <br>
-      lol
+    Chat!
+    <button class = "beep" id = "beep" onclick="ding()">Ding!</button>
+
+    <div class = "actualchat" id = "actualchat">
+      Welcome to the chat! <br>
     </div>
     <div class="send-message">
       <input type="text" placeholder=" Type here!" id="send_message">
@@ -73,7 +46,12 @@
 
   <div class = "playerlist">
     Playerlist: <br>
-    U R: [name here]
+    player1 (host) <br>
+    player2 <br>
+    player3 <br>
+    player4 <br>
+    player5 <br>
+    player6 <br>
   </div>
 
   <div class = "board">
@@ -112,7 +90,7 @@
         </div>
       </div>
 
-      <div class = "card" id="sample_green">
+      <div class = "card center-card">
         <span class="corner_text text_green">10</span>
         <span class="center_text text_green">10</span>
       </div>
@@ -185,7 +163,7 @@
         </div>
       </div>
 
-      <div class = "card">
+      <div class = "card center-card">
         <span class="corner_text text_teal">10</span>
         <span class="center_text text_teal">10</span>
       </div>
@@ -258,7 +236,7 @@
         </div>
       </div>
 
-      <div class = "card">
+      <div class = "card center-card" >
         <span class="corner_text text_pink">10</span>
         <span class="center_text text_pink">10</span>
       </div>
@@ -331,7 +309,7 @@
         </div>
       </div>
 
-      <div class = "card">
+      <div class = "card center-card">
         <span class="corner_text text_yellow">10</span>
         <span class="center_text text_yellow">10</span>
       </div>
@@ -372,7 +350,7 @@
   </div>
 
   <div class="drawpile">
-    Draw! <br><span id="deck-left">20</span> Left!
+    Draw! <br><span id="deck-left">24</span> Left!
 
     <div class="drawpile_card card">
 
@@ -387,6 +365,7 @@
   </button>
 
   <script>
+  /*
   var input = document.getElementById("send_message");
   input.addEventListener("keyup", function(event) {
     if (event.keyCode === 13) {
@@ -394,6 +373,7 @@
      alert(document.getElementById("send_message").value);
     }
   });
+  */
 
 var imgs = document.querySelectorAll('.card');
 
@@ -456,7 +436,7 @@ var card0 = document.getElementsByClassName('card')[0],
       const allcards2 = pile[i].querySelectorAll('.card')
       pile[i].onmouseover = function() {
 
-        console.log(leftRight);
+        //console.log(leftRight);
         for(var k = 0; k < nthchildindex; k++){
           allcards2[k].style.opacity = 1;
         }
@@ -469,7 +449,7 @@ var card0 = document.getElementsByClassName('card')[0],
       }
 
       pile[i].onmouseout = function() {
-        console.log(leftRight);
+        //console.log(leftRight);
         for(var k  = 0; k < nthchildindex; k++){
           allcards2[k].style.opacity = 0;
         }
@@ -550,5 +530,6 @@ function clickFunction(){
 */
 
 </script>
+<script src="js/main.js"></script>
 </body>
 </html>

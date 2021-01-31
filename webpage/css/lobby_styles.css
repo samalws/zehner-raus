@@ -1,13 +1,10 @@
+* {
+  font-family: 'Roboto Mono';
+}
+
 body {
+  color: white;
 	background-color: #2C2F33;
-}
-
-div {
-	position: absolute;
-}
-
-div:not(.startbutton) {
-	border: 3px solid white;
 }
 
 .logo {
@@ -19,19 +16,84 @@ div:not(.startbutton) {
 	transform: translateX(-50%);
 }
 
+.inputName{
+  position: absolute;
+	top: 50%;
+	left: 50%;
+	height: 3em;
+  line-height: 2em;
+	transform: translateX(-50%);
+  text-align: center;
+}
+
+.textbox{
+  text-align: center;
+  background-color: inherit;
+  font: inherit;
+  color: inherit;
+  border: none;
+  height: 2em;
+}
+
+.playerlist{
+  white-space: nowrap;
+  position: absolute;
+  border: 0.1em solid;
+  padding: 0.5em;
+  left: 50%;
+  top: 62.5%;
+  height: 9.5em;
+  width: 20vw;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.chatbox{
+  position: absolute;
+  left: 5px;
+  top: 25%;
+  width: 20%;
+  height: 50%;
+  overflow: visible;
+  padding: 0;
+}
+
+.actualchat{
+  height: 45vh;
+  width: 20vw;
+  overflow-y: auto;
+  padding: 0;
+  word-wrap: break-word;
+}
+
+.send-message input{
+  position: absolute;
+  height: 2em;
+  width: 100%;
+  padding: 0;
+  border: 0;
+}
+
+.send-message button{
+  display: none;
+  border: 0;
+  padding: 0;
+}
+
+.beep{
+  position: absolute;
+  z-index: 1000;
+  width: 30%;
+  right: 0;
+  line-height: 1em;
+}
 .startbutton {
-	top: 55%;
+  position: absolute;
+	top: 90%;
 	left: 40%;
 	width: 10%;
 	height: 3vw;
 	text-align: center;
-}
-
-.toGame	{
-	color: black;
-	top: 70%;
-	left: 50%;
-	transform: translateX(-50%);
 }
 
 #start {
@@ -42,14 +104,11 @@ div:not(.startbutton) {
 	background-color: #2C2F33;
 	padding: 0;
 	border: 3px solid white;
+  color: inherit;
 	background: none;
 }
 
 #start:hover {
 	background-color: #9fcc7a;
 	transform: scale(1.25);
-}
-
-* {
-	color: white;
 }
