@@ -1,3 +1,5 @@
+// TODO sort
+
 function replaceIndex(i,elem,arr) {
 	const arr2 = [...arr]
 	arr2[i] = elem
