@@ -6,10 +6,15 @@ whichPageLoaded = "lobby"
 console.log("lobby.js loaded")
 
 var playerlist = ["currentname1", "currentname2", "currentname3", "currentname4", "currentname5", "currentname6"]
-var name; //receive this somehow
+var name//receive this somehow
 var place = 1; //index in playerlist
 
+changeName(vals[1]);
+
 var input2 = document.getElementById("name");
+input2.placeholder = name;
+input2.value = name;
+
 input2.addEventListener("keyup", function(event) {
   if (event.keyCode === 13) {
    event.preventDefault();
@@ -21,6 +26,8 @@ input2.addEventListener("keyup", function(event) {
    updatePlayerList(playerlist)
   }
 });
+
+
 
 var input = document.getElementById("send_message");
 input.addEventListener("keyup", function(event) {
