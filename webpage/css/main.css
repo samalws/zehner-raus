@@ -156,10 +156,10 @@ body{
   line-height: 100%;
 }
 
-#sample_green{
-  /*opacity: 0*/
-  animation: highlighted 3s infinite;
 
+
+.highlighted{
+  animation: highlighted 3s infinite;
 }
 
 /*

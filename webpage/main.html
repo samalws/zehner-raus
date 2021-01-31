@@ -64,7 +64,7 @@
 
   <div class = hand>
     <div class = "card-container">
-      <div class = "card">
+      <div class = "card" onclick="clickFunction(this)" id = "lol">
         <span class="corner_text text_green">1</span>
         <span class="center_text text_green">1</span>
       </div>
@@ -423,6 +423,63 @@ function toggleAnimation() {
     }
   }
 }
+
+var card0 = document.getElementsByClassName('card')[0],
+    hovered = false;
+
+    var canplayarray
+    for(i in canplayarray){
+      document.getElementById(i).classList.add('highlighted')
+    }
+
+
+    function AnimationListener() {
+        if(hovered)
+        {
+          card0.classList.remove('highlighted');
+          card0.style.transform = 'scale(2)';
+        }
+    }
+
+    function TransitionListener() {
+      if(!hovered)
+      {
+        card0.classList.add('highlighted');
+      }
+    }
+
+    function PrefixedEvent(element, type, callback) {
+      for (var p = 0; p < pfx.length; p++) {
+        if (!pfx[p]) type = type.toLowerCase();
+        element.addEventListener(pfx[p]+type, callback, false);
+      }
+    }
+
+    card0.addEventListener("AnimationIteration",  AnimationListener, false);
+
+
+    card0.onmouseover = function() {
+      hovered = true;
+      console.log("hovering!")
+    }
+card0.onmouseout = function() {
+  setTimeout(function() { hovered = false; }, 500);
+  card0.addEventListener("TransitionEnd",  TransitionListener, false);
+  card0.style.transform = 'scale(1)';
+}
+
+function clickFunction(lol){
+  console.log(lol);
+  console.log(lol.id);
+}
+
+/*
+document.getElementsByClassName("card").addEventListener("click", clickFunction);
+function clickFunction(){
+
+}
+*/
+
 </script>
 </body>
 </html>
