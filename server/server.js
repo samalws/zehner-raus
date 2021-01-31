@@ -358,7 +358,9 @@ function main() {
 			filepath += req.url
 		try {
 			res.end(fs.readFileSync(filepath))
-		} catch (e) {}
+		} catch (e) {
+			res.end()
+		}
 	})
 	htServer.listen(80,() => {})
 
