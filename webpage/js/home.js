@@ -1,4 +1,5 @@
 var vals = getVals();
+console.log("home.js loaded")
 
 function getVals(){
   var gameID = document.getElementById("gameID").value
@@ -61,7 +62,7 @@ function loadSocket() {
 			if (whichPageLoaded == "home") {
 				initialLobbyInfo = event.data.substring("yourLobby ".length)
 				loadLobby()
-			} else
+			} else{}
 				// TODO do stuff
 			// TODO if in game, go back??
 		} else if (event.data == "ur not in a lobby kekl") {
