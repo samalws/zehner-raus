@@ -14,8 +14,9 @@ eval(fs.readFileSync("../raus.js").toString())
 // takes function to alert a player with a given number about a thing
 // also takes a game over callback, which it calls with the finished game
 // returns function for when a client sends a thing
-function serveJustGame(numPlayers, msgToClient, gameOver) {
-	let game = generateGame(numPlayers)
+// also returns a function to get the current game
+function serveJustGame(numPlayers, msgToClient, gameOver, plrList) {
+	let game = generateGame(plrList)
 
 	const bumpPlayer = (plrNum) => msgToClient(plrNum,JSON.stringify(game))
 	const bumpAllPlayers = () => {
@@ -24,10 +25,10 @@ function serveJustGame(numPlayers, msgToClient, gameOver) {
 			msgToClient(i,ser)
 	}
 
-	return (plrNum, msg) => {
+	return [(plrNum, msg) => {
 		let alreadyBumpedPlayer = false
 		if (plrNum == game.dran) {
-			let newGame = null
+			let newGame = undefined
 			if (msg == "drawCard")
 				newGame = game.drawCard()
 			else if (msg == "endTurn")
@@ -37,7 +38,7 @@ function serveJustGame(numPlayers, msgToClient, gameOver) {
 				if (n !== NaN)
 					newGame = game.playCard(n)
 			}
-			if (newGame != null) {
+			if (newGame != undefined) {
 				game = newGame
 				bumpAllPlayers()
 				alreadyBumpedPlayer = true
@@ -47,41 +48,61 @@ function serveJustGame(numPlayers, msgToClient, gameOver) {
 		}
 		if (!alreadyBumpedPlayer)
 			bumpPlayer(plrNum)
-	}
+	}, () => game]
 }
 
-function serveGameWithExtraStuff(conns,doneCallback) {
-	// TODO what if someone disconnects
+function serveGameWithExtraStuff(plrs,doneCallback) {
+	const conns = plrs.map((plr) => plr.conn)
+	const plrList = lobbyToSerializable(plrs)
 
 	const numPlayers = conns.length
 	const msgToClient = ((plrNum, msg) => conns[plrNum].send("0" + msg))
-	const gameOver = ((finalGame) => console.log("ok game over what do i do now"))
+	var msgHandler = undefined
+	var disconnectHandler = undefined
+	const gameOver = ((finalGame) => {
+		for (plrNum in conns) {
+			const conn = conns[plrNum]
+			conn.removeListner("message",msgHandler)
+			conn.removeListner("disconnect",disconnectHandler)
+			conn.send("gameOver ",JSON.serialize(finalGame))
+		}
+		doneCallback()
+	})
 
-	const receivedMsgEvent = serveGameAbstract(numPlayers, msgToClient, gameOver)
+	const callbacks = serveGameAbstract(numPlayers, msgToClient, gameOver, plrList)
+	const receivedMsgEvent = callbacks[0]
+	const getGame = callbacks[1]
+
+	msgHandler = (msg) => {
+		const msg1 = msg.substring(5)
+		switch (msg.substring(0,5)) {
+		case "move ": // make a move / ask for game state
+			receivedMsgEvent(plrNum, msg1)
+			break
+		case "chat ": // chat
+			for (var i = 0; i < numPlayers; i++)
+				conns[plrNum].send("1" + plrNum + ":" + msg1)
+			break
+		case "quit ": // quit
+			gameOver(getGame())
+		}
+	}
+	disconnectHandler = () => gameOver(getGame())
 
 	for (plrNum in conns) {
 		const conn = conns[plrNum]
-		conn.on("message",(msg) => {
-			const msg1 = msg.substring(1)
-			switch (msg[0]) {
-			case "0": // make a move / ask for game state
-				receivedMsgEvent(plrNum, msg1)
-				break
-			case "1": // chat
-				for (var i = 0; i < numPlayers; i++)
-					conns[plrNum].send("1" + plrNum + ":" + msg1))
-			}
-		})
+		conn.on("message",msgHandler)
+		conn.on("disconnect",disconnectHandler)
 	}
 }
 
 function userIsInALobby(conn,lobbies) {
-	return lobbies.connToLobby[conn] !== null
+	return lobbies.connToLobby[conn] !== undefined
 }
 function makeUserId(lobbyId,lobbies) {
 	const lobby = lobbies[lobbyId]
 	const idsTaken = []
-	lobby.foreach((user) => idsTaken.splice(0,0,user.id))
+	lobby.forEach((user) => idsTaken.splice(0,0,user.id))
 	while (true) {
 		const tryId = Math.floor(Math.random()*999999)
 		if (!idsTaken.includes(tryId))
@@ -91,28 +112,33 @@ function makeUserId(lobbyId,lobbies) {
 function makeLobbyId(lobbies) {
 	while (true) {
 		const tryId = Math.floor(Math.random()*999999)
-		if (lobbies[tryId] === null)
+		if (lobbies[tryId] === undefined)
 			return tryId
 	}
 }
-funcion lobbyToString(lobby) {
+function lobbyToSerializable(lobby) {
 	const lobby2 = lobby.map(function (user) {
 		const user2 = {}
 		// notably no conn
 		user2.name = user.name
 		user2.id = user.id
+		return user2
 	})
-	return JSON.stringify(lobby2)
+	return lobby2
+}
+function lobbyToString(lobby) {
+	return JSON.stringify(lobbyToSerializable(lobby2))
 }
 function userIdInLobby(conn,lobbyId,lobbies) {
 	const lobby = lobbies[lobbyId]
 	for (i in lobby)
 		if (lobby[i].conn == conn)
 			return i
-	return null
+	return undefined
 }
 function broadcastLobbyInfo(lobbyId,lobbies) {
-	const s = lobbyToString(lobbies[lobbyId])
+	const lobby = lobbies[lobbyId]
+	const s = lobbyToString(lobby)
 	for (i in lobby)
 		lobby[i].conn.send("yourLobby " + lobbyId + " " + i + " " + s)
 }
@@ -121,6 +147,7 @@ function giveUserLobbyInfo(conn,lobbies) {
 		conn.send("ur not in a lobby kekl")
 	else {
 		const lobbyId = lobbies.connToLobby[conn]
+		console.log(lobbyId)
 		const lobby = lobbies[lobbyId]
 		const i = userIdInLobby(conn,lobbyId,lobbies)
 		const s = lobbyToString(lobbies[lobbyId])
@@ -129,15 +156,16 @@ function giveUserLobbyInfo(conn,lobbies) {
 }
 function removePlrFromLobby(conn,lobbies) {
 	const lobbyId = lobbies.connToLobby[conn]
-	if (lobbyId === null)
-		return null
+	if (lobbyId === undefined)
+		return undefined
 
 	const lobby = lobbies[lobbyId]
 	let userIndexInLobby = userIdInLobby(conn,lobbyId,lobbies)
-	if (userIndexInLobby === null)
-		return null
+	if (userIndexInLobby === undefined)
+		return undefined
+	lobby.splice(userIndexInLobby,1)
 
-	lobbies.connToLobby[conn] = null
+	delete lobbies.connToLobby[conn]
 
 	giveUserLobbyInfo(conn,lobbies)
 	broadcastLobbyInfo(lobbyId,lobbies)
@@ -149,15 +177,15 @@ function removePlrFromLobby(conn,lobbies) {
 }
 function removeLobby(lobbyId,lobbies) {
 	const lobby = lobbies[lobbyId]
-	if (lobby === null)
+	if (lobby === undefined)
 		return
 	while (lobby.length > 0)
 		removePlrFromLobby(lobby[0].conn,lobbies)
-	lobbies[lobbyId] = null
+	delete lobbies[lobbyId]
 }
 function addPlrToLobby(conn,lobbyId,lobbies) { // return plr's id
 	if (userIsInALobby(conn,lobbies))
-		return null
+		return undefined
 
 	const lobby = lobbies[lobbyId]
 	const user = {}
@@ -174,23 +202,23 @@ function addPlrToLobby(conn,lobbyId,lobbies) { // return plr's id
 }
 function addLobby(conn,lobbies) { // return [user id,lobby id]
 	if (userIsInALobby(conn,lobbies))
-		return null
+		return undefined
 
 	const lobbyId = makeLobbyId(lobbies)
-	if (lobbies[lobbyId] !== null)
-		return null
+	if (lobbies[lobbyId] !== undefined)
+		return undefined
 	lobbies[lobbyId] = []
 	const userId = addPlrToLobby(conn,lobbyId,lobbies)
-	if (userId === null) {
+	if (userId === undefined) {
 		removeLobby(lobbyId,lobbies)
-		return null
+		return undefined
 	}
 	return [userId,lobbyId]
 }
 function changeName(conn,name,lobbies) {
 	const lobbyId = lobbies.connToLobby[conn]
-	if (lobbyId === null)
-		return null
+	if (lobbyId === undefined)
+		return undefined
 
 	const lobby = lobbies[lobbyId]
 	for (i in lobby)
@@ -205,35 +233,37 @@ function changeName(conn,name,lobbies) {
 }
 function startGame(conn,lobbies) {
 	const lobbyId = lobbies.connToLobby[conn]
-	if (lobbyId === null)
-		return null
+	if (lobbyId === undefined)
+		return undefined
 
 	const lobby = lobbies[lobbyId]
 	if (lobby.length < 2 || lobby.length > 6)
-		return null
+		return undefined
 	const conns = []
 	for (i in lobby)
 		conns = conns.concat(lobby[i].conn)
 	removeLobby(lobbyId,lobbies)
-	serveGameWithExtraStuff(conns,() => ()) // TODO done callback
+	serveGameWithExtraStuff(conns,() => {})
 }
 function chatInLobby(conn,chat,lobbies) {
 	const lobbyId = lobbies.connToLobby[conn]
-	if (lobbyId === null)
-		return null
+	if (lobbyId === undefined)
+		return undefined
 
 	const lobby = lobbies[lobbyId]
 
-	const userId = null
+	let userId = undefined
 	for (i in lobby)
 		if (lobby[i].conn == conn) {
-			userId= i
+			userId = i
 			break
 		}
-	if (userId === null)
-		return null
+	if (userId === undefined)
+		return undefined
 	for (i in lobby)
 		lobby[i].conn.send("lobbyChat " + userId + " " + chat)
+
+	return true
 }
 function removeEmptyLobbies(lobbies) {
 	for (lobbyId in lobbies)
@@ -242,12 +272,12 @@ function removeEmptyLobbies(lobbies) {
 }
 function lobbyListenConn(conn,lobbies) {
 	conn.on("message",function(msg) {
-		let returnVal = null
+		let returnVal = undefined
 		if (msg == "leaveLobby")
-			returnVal = removePlayerFromLobby(conn,lobbies)
+			returnVal = removePlrFromLobby(conn,lobbies)
 		else if (msg.substring(0,"joinLobby ".length) == "joinLobby ") {
 			restOfMsg = parseInt(msg.substring("joinLobby ".length))
-			if (lobbies[restOfMsg] !== null)
+			if (lobbies[restOfMsg] !== undefined)
 				returnVal = addPlrToLobby(conn,restOfMsg,lobbies)
 		} else if (msg == "addLobby")
 			returnVal = addLobby(conn,lobbies)
@@ -262,21 +292,41 @@ function lobbyListenConn(conn,lobbies) {
 		} else if (msg != "lobbyStatus") {
 			returnVal = true // didn't try a lobby command, so we don't tell them lobby info
 		}
-		if (returnVal === null)
+		if (returnVal === undefined)
 			giveUserLobbyInfo(conn,lobbies)
 	})
+	conn.on("disconnect",() => removePlrFromLobby(conn,lobbies))
 }
 
+function safeifyConn(conn) {
+	const newConn = {}
+	newConn.send = (a) => {
+		try {
+			conn.send(a)
+		} catch (e) {}
+	}
+	newConn.on = (a,b) => {
+		try {
+			conn.on(a,b)
+		} catch (e) {}
+	}
+	newConn.removeListener = (a,b) => {
+		try {
+			conn.removeListener(a,b)
+		} catch (e) {}
+	}
+	return newConn
+}
 function serveSocket(socket) {
 	const lobbies = {}
 	lobbies.connToLobby = {}
 
-	socket.on("connection", (conn) => lobbyListenConn(conn, lobbies))
+	socket.on("connection", (conn) => lobbyListenConn(safeifyConn(conn), lobbies))
 }
 
 function main() {
-	const server = new WebSocket.Server({ port: 8080 })
-	server.on("connection",serveSocket)
+	const server = new ws.Server({ port: 8080 })
+	serveSocket(server)
 }
 
 main()
