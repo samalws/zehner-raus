@@ -359,7 +359,7 @@ function main() {
 		res.writeHead(200)
 		let filepath = "../webpage/"
 		if (req.url == "/")
-			filepath += "index.html"
+			filepath += "home.html"
 		else
 			filepath += req.url
 		try {
