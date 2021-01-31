@@ -1,3 +1,4 @@
+console.log("home.js loaded")
 var vals = getVals();
 
 function getVals(){
