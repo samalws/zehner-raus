@@ -372,7 +372,7 @@ class AbstractConnection {
 // TODO what if they send malformed msg without id
 function listenConn(conn,absConns,lobbies) {
 	conn.on("message",function(msg) {
-		const id = parseInt(msg.substring(0,idLength))
+		const id = msg.substring(0,idLength)
 		const rest = msg.substring(idLength)
 		let absConn = absConns[id]
 		if (absConn === undefined) {
