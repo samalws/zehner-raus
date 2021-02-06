@@ -1,14 +1,8 @@
-whichPageLoaded = "lobby"
-var id = ""
-checkid()
-
-console.log("lobby.js loaded")
-
 var playerlist = ["currentname1", "currentname2", "currentname3", "currentname4", "currentname5", "currentname6"]
 var name//receive this somehow
 var place = 1; //index in playerlist
 
-changeName(vals[1]);
+//changeName(vals[1]);
 
 var input2 = document.getElementById("name");
 input2.placeholder = name;
@@ -74,17 +68,13 @@ function ding(){
 
 function startButton(){
   //delet
-  tomain();
+  //tomain();
   //undelet
   socket.send(id+"startGame")
 }
 
 function tomain(){
   window.location.href = "main.html";
-}
-
-function tolobby(){
-  window.location.href = "lobby.html";
 }
 
 function tohome(){
@@ -94,21 +84,26 @@ function tohome(){
 //socketAddress defined in cookies.js
 function loadSocket() {
 	socket = new WebSocket("ws://"+socketAddress+":80/ws")
-	socket.onopen = () => { console.log("websocket connected") }
+	socket.onopen = () => {
+		socket.send(id+"lobbyStatus")
+	}
 	socket.onmessage = (event) => {
 		console.log(event.data)
 		if (event.data.substring(0,"gameState ".length) == "gameState ") {
 			tomain();
 		} else if (event.data.substring(0,"yourLobby ".length) == "yourLobby ") {
-			if (whichPageLoaded == "home") {
-				initialLobbyInfo = event.data.substring("yourLobby ".length)
-				loadLobby()
-			} else{}
-				// TODO do stuff
-			// TODO if in game, go back??
+			let rest = event.data.substring("yourLobby ".length)
+			let space = rest.search(" ")
+			const lobbyId = parseInt(rest.substring(0,space))
+			rest = rest.substring(space+1)
+			space = rest.search(" ")
+			const myUserId = parseInt(rest.substring(0,space))
+			rest = rest.substring(space+1)
+			const lobbyInfo = JSON.parse(rest)
+			console.log(lobbyId,myUserId,lobbyInfo)
 		} else if (event.data == "ur not in a lobby kekl") {
-      alert("ur not in a lobby kekl")
-      tohome();
+			alert("ur not in a lobby kekl")
+			tohome();
 		}
 	}
 	socket.onclose = (event) => {

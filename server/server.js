@@ -303,6 +303,7 @@ function removeEmptyLobbies(lobbies) {
 function lobbyListenConn(conn,lobbies) {
 	console.log("new connection")
 	conn.on("message",function(msg) {
+		console.log("received "+msg+" from "+conn.id)
 		let returnVal = undefined
 		if (msg == "leaveLobby")
 			returnVal = removePlrFromLobby(conn,lobbies)
@@ -310,6 +311,7 @@ function lobbyListenConn(conn,lobbies) {
 			restOfMsg = parseInt(msg.substring("joinLobby ".length))
 			if (lobbies[restOfMsg] !== undefined)
 				returnVal = addPlrToLobby(conn,restOfMsg,lobbies)
+			console.log("joinLobby return val "+returnVal)
 		} else if (msg == "addLobby")
 			returnVal = addLobby(conn,lobbies)
 		else if (msg.substring(0,"changeName ".length) == "changeName ") {
@@ -344,7 +346,6 @@ class AbstractConnection {
 		this.physicalConn = physicalConn
 		this.handlers = {"message": [], "disconnect": []}
 		this.lastHeardFrom = new Date()
-		abstractListenConn(this,lobbies)
 	}
 	on(name, handler) {
 		const addTo = this.handlers[name]
@@ -355,9 +356,10 @@ class AbstractConnection {
 	}
 	receive(msg) {
 		this.lastHeardFrom = new Date()
-		this.handlers.message.forEach((x) => { try { x(msg) } except (e) {} })
+		this.handlers.message.forEach((x) => { try { x(msg) } catch (e) {} })
 	}
 	send(msg) {
+		console.log("sending "+msg+" to "+this.id)
 		try {
 			this.physicalConn.send(msg)
 		} catch (e) {}
@@ -367,7 +369,7 @@ class AbstractConnection {
 			this.physicalConn = conn
 	}
 	disconnect() {
-		this.handlers.disconnect.forEach((x) => { try { x() } except (e) {} })
+		this.handlers.disconnect.forEach((x) => { try { x() } catch (e) {} })
 	}
 }
 
@@ -381,6 +383,7 @@ function listenConn(conn,absConns,lobbies) {
 		if (absConn === undefined) {
 			absConn = new AbstractConnection(id,conn)
 			absConns[id] = absConn
+			lobbyListenConn(absConn,lobbies)
 		}
 		absConn.setPhysConn(conn)
 		absConn.receive(rest)
@@ -393,23 +396,31 @@ function serveSocket(socket) {
 	const absConns = {}
 	lobbies.connToLobby = {}
 
-	socket.on("connection", (conn,req) => { listenConn(safeifyConn(conn), absConns, lobbies) })
+	socket.on("connection", (conn,req) => { listenConn(conn, absConns, lobbies) })
 
-	return setInterval(1000*60*2, () => {
+	return setInterval(() => {
 		removeEmptyLobbies(lobbies)
 		removeEmptyConns(absConns)
-	})
+	},1000*60*2)
 }
 
+const contentTypes = {
+	"mp3": "audio/mpeg",
+	"js":  "text/javascript"
+}
 function main() {
-	pageText = "example page"
 	const htServer = http.createServer((req,res) => {
-		res.writeHead(200)
 		let filepath = "../webpage/"
 		if (req.url == "/")
 			filepath += "home.html"
 		else
 			filepath += req.url
+		while (filepath[filepath.length-1] == "/")
+			filepath = filepath.substring(0,filepath.length-1)
+		const split = filepath.split(".")
+		const extension = split[split.length-1]
+		const contentType = contentTypes[extension] || "text/"+extension
+		res.writeHead(200, {"Content-Type": contentType})
 		try {
 			res.end(fs.readFileSync(filepath))
 		} catch (e) {
