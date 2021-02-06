@@ -76,7 +76,7 @@ function startButton(){
   //delet
   tomain();
   //undelet
-  socket.send("startGame")
+  socket.send(id+"startGame")
 }
 
 function tomain(){

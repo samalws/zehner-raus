@@ -1,6 +1,4 @@
 var vals = getVals();
-var id = ""
-checkid()
 console.log("home.js loaded")
 
 function getVals(){
@@ -18,8 +16,8 @@ function joinLobby(){
   tolobby();
   //undelet
   vals = getVals();
-  socket.send("joinLobby "+vals[0])
-  setTimeout(1000,() => socket.send("changeName "+vals[1]))
+  socket.send(id+"joinLobby "+vals[0])
+  setTimeout(1000,() => socket.send(id+"changeName "+vals[1]))
 }
 
 function addLobby(){
@@ -27,8 +25,8 @@ function addLobby(){
   tolobby();
   //undelet
   vals = getVals();
-  socket.send("addLobby")
-  setTimeout(1000,() => socket.send("changeName "+vals[1]))
+  socket.send(id+"addLobby")
+  setTimeout(1000,() => socket.send(id+"changeName "+vals[1]))
 }
 
 function loadLobby() {

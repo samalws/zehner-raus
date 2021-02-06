@@ -1,3 +1,7 @@
+var id = ""
+checkid()
+console.log("id="+id)
+
 function getCookie(cname) {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
@@ -32,4 +36,9 @@ function makeid() {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result;
+}
+
+function deleteid(){
+  document.cookie =  "id=" + id + ";expires=Thu, 01 Jan 1970 00:00:00 UTC;"
+  id = ""
 }
