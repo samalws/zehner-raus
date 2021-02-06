@@ -1,6 +1,8 @@
 var id = ""
 checkid()
 console.log("id="+id)
+socketAddress = window.location.host
+console.log("socketAddress="+socketAddress)
 
 function getCookie(cname) {
   var name = cname + "=";

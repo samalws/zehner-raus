@@ -37,7 +37,7 @@ function ding(){
   //TODO send ding
 }
 
-socketAddress = "34.122.128.93"
+//socketAddress defined in cookies.js
 function loadSocket() {
 	socket = new WebSocket("ws://"+socketAddress+":80/ws")
 	socket.onopen = () => { console.log("websocket connected") }
