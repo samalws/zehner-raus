@@ -78,7 +78,7 @@ function loadSocket() {
 	}
 	socket.onclose = (event) => {
 		console.log("connection closed, wasClean = " + event.wasClean)
-		loadSocket()
+		//loadSocket()
 	}
 	socket.onerror = (event) => {
 		console.log("error " + event.message)

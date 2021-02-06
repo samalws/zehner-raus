@@ -300,6 +300,7 @@ function removeEmptyLobbies(lobbies) {
 			removeLobby(lobbyId,lobbies)
 }
 function lobbyListenConn(conn,lobbies) {
+	console.log("new connection")
 	conn.on("message",function(msg) {
 		let returnVal = undefined
 		if (msg == "leaveLobby")
