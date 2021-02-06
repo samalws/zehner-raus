@@ -8,7 +8,8 @@ const fs = require("fs")
 eval(fs.readFileSync("../raus.js").toString())
 
 
-// ticker.removeListener('tick', tickListener);
+const disconnectTime = 1000*60*4 // 4 minute disconnect time
+const idLength = 20 // in characters
 
 
 // run a game without any preference about what communication method you're using
@@ -97,30 +98,34 @@ function serveGameWithExtraStuff(plrs,doneCallback) {
 	}
 }
 
-function connToLobbyIndex(conn,lobbies) {
-	for (var i = 0; i < lobbies.length; i++)
-		if (lobbies.connToLobby[i][0] == conn)
-			return i
+/* function connToLobbyIndex(conn,lobbies) {
+	for (i in lobbies.connToLobby)
+	if (lobbies.connToLobby[i][0] == conn.id)
+		return i
 	return undefined
-}
+} */
 function connToLobbyVal(conn,lobbies) {
-	return lobbies.connToLobby[connToLobbyIndex(conn,lobbies)][1]
+	return lobbies.connToLobby[conn.id] // [connToLobbyIndex(conn,lobbies)][1]
 }
 function removeFromConnToLobby(conn,lobbies) {
-	const i = connToLobbyIndex(conn,lobbies)
-	if (i !== undefined)
-		delete lobbies.connToLobby[i]
+	// const i = connToLobbyIndex(conn,lobbies)
+	// if (i !== undefined)
+	if (lobbies.connToLobby[conn.id] !== undefined)
+		delete lobbies.connToLobby[conn.id] // [i]
 }
 function setConnToLobby(conn,val,lobbies) {
-	const i = connToLobbyIndex(conn,lobbies)
+	/* const i = connToLobbyIndex(conn,lobbies)
 	if (i !== undefined)
 		lobbies.connToLobby[i][1] = val
 	else
-		lobbies.connToLobby.splice(lobbies.connToLobby.length,0,[conn,val])
+		lobbies.connToLobby.splice(lobbies.connToLobby.length,0,[conn.id,val]) */
+	lobbies.connToLobby[conn.id] = val
 }
 function userIsInALobby(conn,lobbies) {
-	return connToLobbyIndex(conn,lobbies) !== undefined
+	return /* connIdToLobbyIndex(conn,lobbies) */ lobbies.connToLobby[conn.id] !== undefined
 }
+// TODO this is notably different from their actual conn id, disambiguate this later
+// TODO users are still identified in lobbies by their conn, not their conn id, this is fine right?
 function makeUserId(lobbyId,lobbies) {
 	const lobby = lobbies[lobbyId]
 	const idsTaken = []
@@ -291,7 +296,7 @@ function removeEmptyLobbies(lobbies) {
 		if (lobbyId != "connToLobby" && lobbies[lobbyId].length == 0)
 			removeLobby(lobbyId,lobbies)
 }
-function lobbyListenConn(conn,lobbies) {
+function abstractListenConn(conn,lobbies) {
 	conn.on("message",function(msg) {
 		let returnVal = undefined
 		if (msg == "leaveLobby")
@@ -321,30 +326,76 @@ function lobbyListenConn(conn,lobbies) {
 	conn.on("disconnect",() => removePlrFromLobby(conn,lobbies))
 }
 
-function safeifyConn(conn) {
-	const newConn = {}
-	newConn.send = (a) => {
-		try {
-			conn.send(a)
-		} catch (e) {}
-	}
-	newConn.on = (a,b) => {
-		try {
-			conn.on(a,b)
-		} catch (e) {}
-	}
-	newConn.removeListener = (a,b) => {
-		try {
-			conn.removeListener(a,b)
-		} catch (e) {}
-	}
-	return newConn
+function removeEmptyConns(absConns) {
+	const date = new Date()
+	for (id in absConns)
+		if (absConns[id].lastHeardFrom - date <= disconnectTime) {
+			absConns[id].disconnect()
+			delete absConns[id]
+		}
 }
+
+class AbstractConnection {
+	constructor(id,physicalConn) {
+		this.id = id
+		this.physicalConn = physicalConn
+		this.handlers = {"message": [], "disconnect": []}
+		this.lastHeardFrom = new Date()
+		abstractListenConn(this,lobbies)
+	}
+	on(name, handler) {
+		const addTo = this.handlers[name]
+		addTo.splice(addTo.length,0,handler)
+	}
+	removeListener(name, handler) {
+		this.handlers[name] = this.handlers[name].filter((x) => x != handler)
+	}
+	receive(msg) {
+		this.lastHeardFrom = new Date()
+		this.handlers.message.forEach((x) => { try { x(msg) } except (e) {} })
+	}
+	send(msg) {
+		try {
+			this.physicalConn.send(msg)
+		} catch (e) {}
+	}
+	setPhysConn(conn) {
+		if (this.physicalConn != conn)
+			this.physicalConn = conn
+	}
+	disconnect() {
+		this.handlers.disconnect.forEach((x) => { try { x() } except (e) {} })
+	}
+}
+
+// TODO memory leaks?
+// TODO what if they send malformed msg without id
+function listenConn(conn,absConns,lobbies) {
+	conn.on("message",function(msg) {
+		const id = parseInt(msg.substring(0,idLength))
+		const rest = msg.substring(idLength)
+		let absConn = absConns[id]
+		if (absConn === undefined) {
+			absConn = new AbstractConnection(id,conn)
+			absConns[id] = absConn
+		}
+		absConn.setPhysConn(conn)
+		absConn.receive(rest)
+	})
+}
+
+// returns interval to cleanup if need be
 function serveSocket(socket) {
 	const lobbies = {}
-	lobbies.connToLobby = []
+	const absConns = {}
+	lobbies.connToLobby = {}
 
-	socket.on("connection", (conn,req) => { lobbyListenConn(safeifyConn(conn), lobbies) })
+	socket.on("connection", (conn,req) => { listenConn(safeifyConn(conn), absConns, lobbies) })
+
+	return setInterval(1000*60*2, () => {
+		removeEmptyLobbies(lobbies)
+		removeEmptyConns(absConns)
+	})
 }
 
 function main() {
