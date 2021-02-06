@@ -12,6 +12,11 @@ function sendVals(){
   socket.send("joinLobby "+vals[0])
   setTimeout(1000,() => socket.send("changeName "+vals[1]))
 }
+function sendVals2(){
+  vals = getVals();
+  socket.send("addLobby")
+  setTimeout(1000,() => socket.send("changeName "+vals[1]))
+}
 
 function loadLobby() {
   newHTML = lobbybody
@@ -46,12 +51,14 @@ function loadSocket() {
 	socket = new WebSocket("ws://"+socketAddress+":80/ws")
 	socket.onopen = () => { console.log("websocket connected") }
 	socket.onmessage = (event) => {
+		console.log(event.data)
 		if (event.data.substring(0,"gameState ".length) == "gameState ") {
 			const after = event.data.substring("gameState ".length)
 			let nextSpace = 0
 			while (nextSpace < after.length && after[nextSpace] != " ") nextSpace++
 			myNumber = parseInt(after.substring(0,nextSpace))
-			gameState = Game.fromJSON(after.substring(nextSpace+1))
+			console.log("hello????"+after.substring(nextSpace+1))
+			gameState = gameFromJSON(after.substring(nextSpace+1))
 
 			gameInfo = [myNumber,gameState]
 			if (whichPageLoaded == "lobby")

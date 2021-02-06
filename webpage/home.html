@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Squada+One&display=swap" rel="stylesheet">
 
-	<script src="../raus.js"></script>
+	<script src="raus.js"></script>
   <script src="js/game.js"></script>
 </head>
 
@@ -351,7 +351,7 @@
     </div>
   </div>
 
-  <div class="drawpile">
+  <div class="drawpile" onclick = "drawPile()">
     Draw! <br><span id="deck-left">24</span> Left!
 
     <div class="drawpile_card card">
@@ -360,7 +360,7 @@
 
     </div>
   </div>
-  <button class  = "endbutton">
+  <button class  = "endbutton" onclick = "endTurn()">
     <p>
       END TURN
     </p>
@@ -499,6 +499,9 @@ function clickFunction(lol){
 
 	<div class="enterbutton">
 		<button id="enter" onclick="sendVals()">Enter</button>
+	</div>
+	<div class="unenterbutton">
+		<button id="unenter" onclick="sendVals2()">Start Room</button>
 	</div>
 
 	<script>

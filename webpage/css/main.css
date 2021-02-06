@@ -60,7 +60,7 @@ body{
 }
 
 .hand{
-  border: 3px solid white;
+  /*border: 3px solid white;*/
   position: absolute;
   bottom: 5px;
   height: 15%;
@@ -185,7 +185,7 @@ body{
 }
 
 .board{
-  border: 3px solid white;
+  /*border: 3px solid white;*/
   padding-top: 1vh;
   display: grid;
   position: absolute;
@@ -225,7 +225,7 @@ body{
   height: 17.5vh;
   width: 43%;
   float: left;
-  border: 3px solid white;
+  /*border: 3px solid white;*/
 }
 
 .playedcardleft{

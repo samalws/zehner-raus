@@ -20,13 +20,14 @@ const idLength = 20 // in characters
 function serveJustGame(numPlayers, msgToClient, gameOver, plrList) {
 	let game = generateGame(plrList)
 
-	const bumpPlayer = (plrNum) => msgToClient(plrNum,"gameState " + plrNum + " " + JSON.stringify(game))
+	const bumpPlayer = (plrNum) => msgToClient(plrNum,plrNum + " " + JSON.stringify(game))
 	const bumpAllPlayers = () => {
-		const ser = JSON.serialize(game)
+		const ser = JSON.stringify(game)
 		for (var i = 0; i < numPlayers; i++)
-			msgToClient(i,"gameState " + i + " " + ser)
+			msgToClient(i,i + " " + ser)
 	}
 
+	bumpAllPlayers()
 	return [(plrNum, msg) => {
 		let alreadyBumpedPlayer = false
 		if (plrNum == game.dran) {
@@ -54,7 +55,9 @@ function serveJustGame(numPlayers, msgToClient, gameOver, plrList) {
 }
 
 function serveGameWithExtraStuff(plrs,doneCallback) {
-	const conns = plrs.map((plr) => plr.conn)
+	const conns = []
+	for (i in plrs)
+		conns.splice(conns.length,0,plrs[i].conn)
 	const plrList = lobbyToSerializable(plrs)
 
 	const numPlayers = conns.length
@@ -71,7 +74,7 @@ function serveGameWithExtraStuff(plrs,doneCallback) {
 		doneCallback()
 	})
 
-	const callbacks = serveGameAbstract(numPlayers, msgToClient, gameOver, plrList)
+	const callbacks = serveJustGame(numPlayers, msgToClient, gameOver, plrList)
 	const receivedMsgEvent = callbacks[0]
 	const getGame = callbacks[1]
 
@@ -226,11 +229,11 @@ function addPlrToLobby(conn,lobbyId,lobbies) { // return plr's id
 
 	return user.id
 }
-function addLobby(conn,lobbies,id) { // return [user id,lobby id]
+function addLobby(conn,lobbies) { // return [user id,lobby id]
 	if (userIsInALobby(conn,lobbies))
 		return undefined
 
-	const lobbyId = id !== undefined ? id : makeLobbyId(lobbies)
+	const lobbyId = makeLobbyId(lobbies)
 	if (lobbies[lobbyId] !== undefined)
 		return undefined
 	lobbies[lobbyId] = []
@@ -265,11 +268,12 @@ function startGame(conn,lobbies) {
 	const lobby = lobbies[lobbyId]
 	if (lobby.length < 2 || lobby.length > 6)
 		return undefined
-	const conns = []
+	let conns = []
 	for (i in lobby)
 		conns = conns.concat(lobby[i].conn)
+	const copyLobby = [...lobby]
 	removeLobby(lobbyId,lobbies)
-	serveGameWithExtraStuff(conns,() => {})
+	serveGameWithExtraStuff(copyLobby,() => {})
 }
 function chatInLobby(conn,chat,lobbies) {
 	const lobbyId = connToLobbyVal(conn,lobbies)
@@ -305,8 +309,6 @@ function abstractListenConn(conn,lobbies) {
 			restOfMsg = parseInt(msg.substring("joinLobby ".length))
 			if (lobbies[restOfMsg] !== undefined)
 				returnVal = addPlrToLobby(conn,restOfMsg,lobbies)
-			else
-				returnVal = addLobby(conn,lobbies,restOfMsg)
 		} else if (msg == "addLobby")
 			returnVal = addLobby(conn,lobbies)
 		else if (msg.substring(0,"changeName ".length) == "changeName ") {
@@ -404,7 +406,7 @@ function main() {
 		res.writeHead(200)
 		let filepath = "../webpage/"
 		if (req.url == "/")
-			filepath += "index.html"
+			filepath += "home.html"
 		else
 			filepath += req.url
 		try {
