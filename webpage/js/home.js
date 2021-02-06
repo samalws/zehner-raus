@@ -16,6 +16,7 @@ function sendVals2(){
   vals = getVals();
   socket.send("addLobby")
   setTimeout(1000,() => socket.send("changeName "+vals[1]))
+}
 
 function loadLobby() {
   newHTML = lobbybody
@@ -56,7 +57,8 @@ function loadSocket() {
 			let nextSpace = 0
 			while (nextSpace < after.length && after[nextSpace] != " ") nextSpace++
 			myNumber = parseInt(after.substring(0,nextSpace))
-			gameState = Game.fromJSON(after.substring(nextSpace+1))
+			console.log("hello????"+after.substring(nextSpace+1))
+			gameState = gameFromJSON(after.substring(nextSpace+1))
 
 			gameInfo = [myNumber,gameState]
 			if (whichPageLoaded == "lobby")

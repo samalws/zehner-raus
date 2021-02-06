@@ -47,10 +47,10 @@ function applyHand(hand, game) {
 		const card0 = children[i].querySelector(".card")
 		const j = i
 		card0.onclick = () => clicky(j);
-		if(game.cardIsPlayable(hand[i])){
+		if(game.cardIsPlayable(hand[i]))
 			card0.classList.add('highlighted');
-			console.log("nani?")
-		}
+		else
+			card0.classList.remove('highlighted')
 	}
 }
 
@@ -59,17 +59,14 @@ function clicky(index) {
 	socket.send("move playCard "+index)
 }
 
-function endTurnClicked() {
+function endTurn() {
 	socket.send("move endTurn")
 }
 
-function drawCardClicked() {
+function drawCard() {
 	socket.send("move drawCard")
 }
 
-function applyDran(dran) {
-	// tf do I do here lmao
-}
 function applyDranState(dranState) {
 	// tf do I do here lmao
 }
@@ -87,6 +84,7 @@ function applyCardsDown(cardsDown) {
 		else
 			tensPlayed[card.suit] = true
 	})
+	console.log(pileValues)
 	for (suitNum in suitNames) {
 		const suitName = suitNames[suitNum]
 		const row = document.getElementById(suitName + "-pile")
@@ -155,16 +153,16 @@ function applyCardsDown(cardsDown) {
 		}
 	}
 }
-function applyWinOrder(winOrder) {
-	// tf do I do here lmao
+function doLeaderboard(game) {
+	innerText = ""
+	for (i in game.playerList) {
+	}
 }
 function applyGameState(myNumber,game) {
 	applyHand(game.hands[myNumber], game)
-	applyDran(game.dran)
-	applyDranState(game.dranState)
 	applyDeckAmt(game.deck.length)
 	applyCardsDown(game.cardsDown)
-	applyWinOrder(game.winOrder)
+	doLeaderboard(game)
 }
 
 function convertIDtoIndex(num){
