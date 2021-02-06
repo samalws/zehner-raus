@@ -1,4 +1,6 @@
 var vals = getVals();
+var id = ""
+checkid()
 console.log("home.js loaded")
 
 function getVals(){

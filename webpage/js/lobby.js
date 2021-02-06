@@ -1,4 +1,6 @@
 whichPageLoaded = "lobby"
+var id = ""
+checkid()
 
 console.log("lobby.js loaded")
 

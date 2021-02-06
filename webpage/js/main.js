@@ -1,4 +1,6 @@
 whichPageLoaded = "main"
+var id = ""
+checkid()
 
 applyGameState(gameInfo[0],gameInfo[1])
 
