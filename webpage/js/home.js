@@ -7,39 +7,40 @@ function getVals(){
   return [gameID, name]
 }
 
-function sendVals(){
+function tolobby(){
+  window.location.href = "lobby.html";
+}
+
+function joinLobby(){
+  //to delete
+  tolobby();
+  //undelet
   vals = getVals();
   socket.send("joinLobby "+vals[0])
   setTimeout(1000,() => socket.send("changeName "+vals[1]))
 }
-function sendVals2(){
+
+function addLobby(){
+  //to delete
+  tolobby();
+  //undelet
   vals = getVals();
   socket.send("addLobby")
   setTimeout(1000,() => socket.send("changeName "+vals[1]))
 }
 
 function loadLobby() {
+  window.location.href = "lobby.html";
+
+
+  //redirect into new page
+
   newHTML = lobbybody
   document.querySelector('body').innerHTML = newHTML;
   var script = document.createElement('script');
   script.src = "js/lobby.js";
   document.head.appendChild(script)
 }
-
-console.log("working");
-
-var lobbybody = document.getElementById("lobby").innerHTML;
-document.getElementById("lobby").remove()
-
-var mainbody = document.getElementById("main").innerHTML;
-document.getElementById("main").remove()
-
-
-
-
-
-
-
 
 whichPageLoaded = "home"
 

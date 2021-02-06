@@ -10,7 +10,7 @@ div {
 	position: absolute;
 }
 
-div:not(.enterbutton) {
+div:not(.button) {
 	border: 3px solid white;
 }
 
