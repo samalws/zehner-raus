@@ -126,13 +126,15 @@ function applyCardsDown(cardsDown) {
 	  }
 
 
+
+
 	  const leftRight = leftRightOG;
 	  const allcards2 = pile[i].querySelectorAll('.card')
 	  pile[i].onmouseover = function() {
 	    for(var k = 0; k < arrayOfLatestCards[i]; k++){
 	      allcards2[k].style.opacity = 1;
 	    }
-	    console.log("making this: " + arrayOfLatestCards[i] + " suit: "+ i + "    VISIBLE")
+	    //console.log("making this: " + arrayOfLatestCards[i] + " suit: "+ i + "    VISIBLE")
 	    allcards2[arrayOfLatestCards[i]].style.position = "relative";
 	    if(leftRight != 0 && arrayOfLatestCards[i] != 0)
 	      allcards2[arrayOfLatestCards[i]].style.marginLeft = "-10vh"; //test
@@ -146,7 +148,7 @@ function applyCardsDown(cardsDown) {
 	    for(var k  = 0; k < arrayOfLatestCards[i]; k++){
 	      allcards2[k].style.opacity = 0;
 	    }
-	    console.log("making this: " + arrayOfLatestCards[i] + " suit: "+ i + "    INVISIBLE")
+	    //console.log("making this: " + arrayOfLatestCards[i] + " suit: "+ i + "    INVISIBLE")
 	    allcards2[arrayOfLatestCards[i]].style.position = "absolute";
 	    if(leftRight != 0)
 	      allcards2[arrayOfLatestCards[i]].style.marginLeft = "0";
@@ -156,6 +158,7 @@ function applyCardsDown(cardsDown) {
 	    }
 	    allcards2[arrayOfLatestCards[i]].style.opacity = 1;
 	  }
+		allcards2[arrayOfLatestCards[i]].style.opacity = 1;
 	}
 
 }
