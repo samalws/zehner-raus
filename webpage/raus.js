@@ -78,7 +78,7 @@ class Game {
 		return this.winOrder.includes(this.dran)
 	}
 	canEndTurn() {
-		return this.dranState == -1 || this.dranState == 0 || this.dranState == 3 || this.dranEmptyHand()
+		return this.dranState == -1 || this.dranState == 3 || this.dranEmptyHand()
 	}
 	justEndTurn() {
 		if (!this.canEndTurn())
