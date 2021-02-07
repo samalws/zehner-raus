@@ -1,12 +1,10 @@
-var playerlist = ["currentname1", "currentname2", "currentname3", "currentname4", "currentname5", "currentname6"]
+var playerlist = ["currentname1", "unnamed friend", "currentname3", "currentname4", "currentname5", "currentname6"]
 var name = "unnamed friend"//receive this somehow
 var place = 1; //index in playerlist
-var gameID = "-1"
-
-//changeName(vals[1]);
+var lobbyID = "-1"
 
 updatePlayerList(playerlist)
-updateGameID(gameID);
+updateLobbyID(lobbyID);
 
 var input2 = document.getElementById("name");
 input2.placeholder = name;
@@ -17,9 +15,10 @@ input2.addEventListener("keyup", function(event) {
    event.preventDefault();
    var newname = input2.value
    alert("Name changed successfully to: " + newname);
-
+   /*
    input2.placeholder = newname;
    input2.value = newname;
+   */
    changeName(newname);
    updatePlayerList(playerlist)
   }
@@ -34,9 +33,9 @@ input.addEventListener("keyup", function(event) {
   }
 });
 
-function updateGameID(newGameID){
-  gameID = newGameID
-  document.getElementById("gameid").innerHTML = gameID;
+function updateLobbyID(newLobbyID){
+  lobbyID = newLobbyID
+  document.getElementById("lobbyid").innerHTML = lobbyID;
 }
 
 function updateScroll(){
@@ -45,13 +44,12 @@ function updateScroll(){
 }
 
 function changeName(newname){
-  name = newname;
-  playerlist[place] = name;
+  socket.send(id + "changeName " + newname)
 }
 
 //to update playerList
 function updatePlayerList(playerlist){
-  changeName(document.getElementById("name").value);
+  //changeName(document.getElementById("name").value);
   //playerlist array of players, with host first
   var doc = document.getElementById("playerlist")
   var content = "Playerlist :<br>"
@@ -110,13 +108,16 @@ function loadSocket() {
 		} else if (event.data.substring(0,"yourLobby ".length) == "yourLobby ") {
 			let rest = event.data.substring("yourLobby ".length)
 			let space = rest.search(" ")
-			const lobbyId = parseInt(rest.substring(0,space))
+			lobbyId = parseInt(rest.substring(0,space))
 			rest = rest.substring(space+1)
 			space = rest.search(" ")
-			const myUserId = parseInt(rest.substring(0,space))
+			const myLobbyIndex = parseInt(rest.substring(0,space))
 			rest = rest.substring(space+1)
 			const lobbyInfo = JSON.parse(rest)
-			console.log(lobbyId,myUserId,lobbyInfo)
+			console.log(lobbyId,myLobbyIndex,lobbyInfo)
+      playerlist = lobbyInfo
+      name = playerlist[myLobbyIndex]
+      updatePlayerList(playerlist)
 		} else if (event.data == "ur not in a lobby kekl") {
 			alert("ur not in a lobby kekl")
 			tohome();

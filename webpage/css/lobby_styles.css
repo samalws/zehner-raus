@@ -16,7 +16,7 @@ body {
 	transform: translateX(-50%);
 }
 
-.gameidContainer{
+.lobbyidContainer{
   position: absolute;
 	top: 50%;
 	left: 50%;
@@ -26,7 +26,7 @@ body {
   text-align: center;
 }
 
-#gameid{
+#lobbyid{
   text-align: center;
   background-color: inherit;
   font: inherit;
