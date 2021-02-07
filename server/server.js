@@ -352,11 +352,12 @@ function lobbyListenConn(conn,lobbies) {
 
 function removeEmptyConns(absConns) {
 	const date = new Date()
-	for (id in absConns)
-		if (absConns[id].lastHeardFrom - date <= disconnectTime) {
+	for (id in absConns) {
+		if (date - absConns[id].lastHeardFrom >= disconnectTime) {
 			absConns[id].disconnect()
 			delete absConns[id]
 		}
+	}
 }
 
 class AbstractConnection {
@@ -378,7 +379,10 @@ class AbstractConnection {
 		this.handlers.message.forEach((x) => { try { x(msg) } catch (e) {} })
 	}
 	send(msg) {
-		console.log("sending "+msg+" to "+this.id)
+		let logMsg = msg
+		if (logMsg.length > 30)
+			logMsg = logMsg.substring(0,30)+"..."
+		console.log("sending "+logMsg+" to "+this.id)
 		try {
 			this.physicalConn.send(msg)
 		} catch (e) {}
@@ -388,6 +392,7 @@ class AbstractConnection {
 			this.physicalConn = conn
 	}
 	disconnect() {
+		console.log("disconnecting "+this.id)
 		this.handlers.disconnect.forEach((x) => { try { x() } catch (e) {} })
 	}
 }
