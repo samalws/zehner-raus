@@ -46,7 +46,7 @@ function loadSocket() {
 			let nextSpace = 0
 			while (nextSpace < after.length && after[nextSpace] != " ") nextSpace++
 			myNumber = parseInt(after.substring(0,nextSpace))
-			gameState = gameFromJSON(after.substring(nextSpace+1))
+			gameState = JSON.parse(after.substring(nextSpace+1))
 
 			gameInfo = [myNumber,gameState]
 			applyGameState(myNumber,gameState)

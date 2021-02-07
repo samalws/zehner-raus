@@ -93,11 +93,13 @@ class Game {
 		if (this.gameIsOver() || jft == undefined)
 			return undefined
 		else if (jft.dranWon())
-			return jft.finishTurn()
+			return jft.endTurn()
 		else
 			return jft
 	}
 	playCard(i) {
+		if (this.dranState > 0)
+			return undefined;
 		const hand = this.hands[this.dran]
 		if (i >= hand.length)
 			return undefined
