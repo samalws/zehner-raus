@@ -162,7 +162,7 @@ function lobbyToSerializable(lobby) {
 function lobbyToString(lobby) {
 	return JSON.stringify(lobbyToSerializable(lobby))
 }
-function lobbyToPlayerlist(lobby) {
+function lobbyToPlayerList(lobby) {
 	return lobby.map((user) => user.name)
 }
 function lobbyToPlayerListString(lobby) {
@@ -190,7 +190,7 @@ function giveUserLobbyInfo(conn,lobbies) {
 		const lobbyId = connToLobbyVal(conn,lobbies)
 		const lobby = lobbies[lobbyId]
 		const i = userIdInLobby(conn,lobbyId,lobbies)
-		const s = lobbyToString(lobbies[lobbyId])
+		const s = lobbyToPlayerListString(lobbies[lobbyId])
 		conn.send("yourLobby " + lobbyId + " " + i + " " + s)
 	}
 }
