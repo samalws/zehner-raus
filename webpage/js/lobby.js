@@ -1,8 +1,12 @@
 var playerlist = ["currentname1", "currentname2", "currentname3", "currentname4", "currentname5", "currentname6"]
-var name//receive this somehow
+var name = "unnamed friend"//receive this somehow
 var place = 1; //index in playerlist
+var gameID = "-1"
 
 //changeName(vals[1]);
+
+updatePlayerList(playerlist)
+updateGameID(gameID);
 
 var input2 = document.getElementById("name");
 input2.placeholder = name;
@@ -11,8 +15,9 @@ input2.value = name;
 input2.addEventListener("keyup", function(event) {
   if (event.keyCode === 13) {
    event.preventDefault();
-   alert("Name changed successfully to: " + input2.value);
    var newname = input2.value
+   alert("Name changed successfully to: " + newname);
+
    input2.placeholder = newname;
    input2.value = newname;
    changeName(newname);
@@ -28,6 +33,11 @@ input.addEventListener("keyup", function(event) {
    document.getElementById("send_message").value = "";
   }
 });
+
+function updateGameID(newGameID){
+  gameID = newGameID
+  document.getElementById("gameid").innerHTML = gameID;
+}
 
 function updateScroll(){
     var element = document.getElementById("actualchat");
@@ -47,7 +57,13 @@ function updatePlayerList(playerlist){
   var content = "Playerlist :<br>"
   content += playerlist[0] + " (host)<br>"
   for(var i = 1; i < playerlist.length; i++){
-    content += playerlist[i] + "<br>"
+    if(playerlist[i] == name){
+      content += "<input class=\"textbox\" type = \"text\" placeholder = \"" + name + "\" id = \"name\" + value = \"" + name + "\"style = \"color:yellow\">"
+      content += "<br>"
+    } else{
+      content += playerlist[i] + "<br>"
+    }
+
   }
   doc.innerHTML = content;
 }
@@ -59,7 +75,7 @@ function sendMessage(user, message){
   updateScroll();
 }
 
-updatePlayerList(playerlist)
+
 
 function ding(){
   document.getElementById('beep-sound').play()
