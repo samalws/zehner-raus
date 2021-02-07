@@ -124,8 +124,11 @@ function setConnToLobby(conn,val,lobbies) {
 		lobbies.connToLobby.splice(lobbies.connToLobby.length,0,[conn.id,val]) */
 	lobbies.connToLobby[conn.id] = val
 }
+function userIsInGame(conn,lobbies) {
+	return lobbies.connToLobby[conn.id] == "ingame"
+}
 function userIsInALobby(conn,lobbies) {
-	return /* connIdToLobbyIndex(conn,lobbies) */ lobbies.connToLobby[conn.id] !== undefined
+	return /* connIdToLobbyIndex(conn,lobbies) */ lobbies.connToLobby[conn.id] !== undefined && !userIsInGame(conn,lobbies)
 }
 // TODO this is notably different from their actual conn id, disambiguate this later
 // TODO users are still identified in lobbies by their conn, not their conn id, this is fine right?
@@ -173,7 +176,9 @@ function broadcastLobbyInfo(lobbyId,lobbies) {
 		lobby[i].conn.send("yourLobby " + lobbyId + " " + i + " " + s)
 }
 function giveUserLobbyInfo(conn,lobbies) {
-	if (!userIsInALobby(conn,lobbies))
+	if (userIsInGame(conn,lobbies))
+		conn.send("ur ingame")
+	else if (!userIsInALobby(conn,lobbies))
 		conn.send("ur not in a lobby kekl")
 	else {
 		const lobbyId = connToLobbyVal(conn,lobbies)
@@ -183,7 +188,7 @@ function giveUserLobbyInfo(conn,lobbies) {
 		conn.send("yourLobby " + lobbyId + " " + i + " " + s)
 	}
 }
-function removePlrFromLobby(conn,lobbies) {
+function removePlrFromLobby(conn,lobbies,forGame=false) {
 	const lobbyId = connToLobbyVal(conn,lobbies)
 	if (lobbyId === undefined)
 		return undefined
@@ -194,7 +199,10 @@ function removePlrFromLobby(conn,lobbies) {
 		return undefined
 	lobby.splice(userIndexInLobby,1)
 
-	removeFromConnToLobby(conn,lobbies)
+	if (forGame)
+		setConnToLobby(conn,"ingame",lobbies)
+	else
+		removeFromConnToLobby(conn,lobbies)
 
 	giveUserLobbyInfo(conn,lobbies)
 	broadcastLobbyInfo(lobbyId,lobbies)
@@ -204,12 +212,12 @@ function removePlrFromLobby(conn,lobbies) {
 
 	return true
 }
-function removeLobby(lobbyId,lobbies) {
+function removeLobby(lobbyId,lobbies,forGame=false) {
 	const lobby = lobbies[lobbyId]
 	if (lobby === undefined)
 		return
 	while (lobby.length > 0)
-		removePlrFromLobby(lobby[0].conn,lobbies)
+		removePlrFromLobby(lobby[0].conn,lobbies,forGame)
 	delete lobbies[lobbyId]
 }
 function addPlrToLobby(conn,lobbyId,lobbies) { // return plr's id
@@ -272,8 +280,8 @@ function startGame(conn,lobbies) {
 	for (i in lobby)
 		conns = conns.concat(lobby[i].conn)
 	const copyLobby = [...lobby]
-	removeLobby(lobbyId,lobbies)
-	serveGameWithExtraStuff(copyLobby,() => {})
+	removeLobby(lobbyId,lobbies,true)
+	serveGameWithExtraStuff(copyLobby,() => {removeFromConnToLobby(conn,lobbies)})
 }
 function chatInLobby(conn,chat,lobbies) {
 	const lobbyId = connToLobbyVal(conn,lobbies)

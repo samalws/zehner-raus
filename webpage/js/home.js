@@ -45,7 +45,10 @@ function loadLobby() {
 //socketAddress defined in cookies.js
 function loadSocket() {
 	socket = new WebSocket("ws://"+socketAddress+":80/ws")
-	socket.onopen = () => { console.log("websocket connected") }
+	socket.onopen = () => {
+		console.log("websocket connected")
+		setInterval(() => socket.send(id), 30*1000)
+	}
 	socket.onmessage = (event) => {
 		console.log(event.data)
 		if (event.data.substring(0,"gameState ".length) == "gameState ")
