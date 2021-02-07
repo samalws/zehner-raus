@@ -40,8 +40,6 @@ body{
   text-align: center;
 }
 
-
-
 .drawpile_card {
   background-color: #2C2F33;
   color: white;
@@ -174,13 +172,13 @@ body{
 
 
 .card:hover {
-  transform: scale(1.2) !important; /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  transform: scale(1.1) !important;
   z-index: 9001;
 }
 
 
 .hand .card:hover{
-  transform: translate(0, -25%) scale(1.5) !important;
+  transform: translate(0, -12.5%) scale(1.25) !important;
   z-index: 9001;
 }
 
@@ -285,7 +283,7 @@ body{
 }
 */
 .drawpile_card:hover {
-  transform: translate(0, 25%) scale(1.5) !important;
+  transform: translate(0, 25%) scale(1.25) !important;
 }
 
 @keyframes highlighted {
