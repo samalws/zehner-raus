@@ -103,7 +103,7 @@ function applyCardsDown(cardsDown) {
 	}
 
 
-	var arrayOfLatestCards = []; //
+	var arrayOfLatestCards = []; //putting into a single array
 	for(var ii = 0; ii < 4; ii++){
 		for(var jj = 0; jj < 2; jj++){
 			arrayOfLatestCards.push(convertIDtoIndex(pileValues[ii][jj]))
@@ -174,4 +174,3 @@ function convertIDtoIndex(num){
 	}
 	return toReturn
 }
-
