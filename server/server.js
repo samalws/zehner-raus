@@ -316,15 +316,15 @@ function lobbyListenConn(conn,lobbies) {
 		if (msg == "leaveLobby")
 			returnVal = removePlrFromLobby(conn,lobbies)
 		else if (msg.substring(0,"joinLobby ".length) == "joinLobby ") {
-			const restOfMsg = parseInt(msg.substring("joinLobby ".length))
+			const restOfMsg = msg.substring("joinLobby ".length)
 			const space = restOfMsg.search(" ")
-			const lobbyId = restOfMsg.substring(0,space)
+			const lobbyId = parseInt(restOfMsg.substring(0,space))
 			const name = restOfMsg.substring(space+1)
-			if (lobbies[restOfMsg] !== undefined)
+			if (lobbies[lobbyId] !== undefined)
 				returnVal = addPlrToLobby(conn,lobbyId,name,lobbies)
 			console.log("joinLobby return val "+returnVal)
 		} else if (msg.substring(0,"addLobby ".length) == "addLobby ") {
-			const restOfMsg = parseInt(msg.substring("addLobby ".length))
+			const restOfMsg = msg.substring("addLobby ".length)
 			returnVal = addLobby(conn,restOfMsg,lobbies)
 		} else if (msg.substring(0,"changeName ".length) == "changeName ") {
 			restOfMsg = msg.substring("changeName ".length)
