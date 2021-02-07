@@ -116,21 +116,27 @@ function applyCardsDown(cardsDown) {
 	var pile = document.getElementsByClassName("cardpile");
 	for(var j = 0; j < 8; j++){
 	  const i = j
-
 	  //get nth childindex from arrayofLatestCards
 	  leftRightOG = i % 2;
-
 
 	  if(arrayOfLatestCards[i] == -1){
 	    continue;
 	  }
 
 	  const leftRight = leftRightOG;
-		console.log(leftRight);
 	  const allcards2 = pile[i].querySelectorAll('.card')
 
 		pile[i].onmouseover = null
 		pile[i].onmouseout = null
+
+		for(var k = 0; k < allcards2.length; k++){
+			allcards2[k].style.opacity=0;
+			allcards2[k].style.position = "relative";
+			if(leftRight != 0)
+	      allcards2[k].style.marginLeft = "-10vh"; //test
+	    else
+	      allcards2[k].style.marginRight = "-10vh";
+		}
 
 	  pile[i].onmouseover = function() {
 	    for(var k = 0; k < arrayOfLatestCards[i]; k++){
@@ -160,6 +166,15 @@ function applyCardsDown(cardsDown) {
 	    }
 	    allcards2[arrayOfLatestCards[i]].style.opacity = 1;
 	  }
+
+		//giving style to actual thing
+		allcards2[arrayOfLatestCards[i]].style.position = "absolute";
+		if(leftRight != 0)
+			allcards2[arrayOfLatestCards[i]].style.marginLeft = "0";
+		else{
+			allcards2[arrayOfLatestCards[i]].style.marginRight = "0";
+			allcards2[arrayOfLatestCards[i]].style.right = "0";
+		}
 		allcards2[arrayOfLatestCards[i]].style.opacity = 1;
 	}
 
