@@ -129,7 +129,7 @@ function applyCardsDown(cardsDown) {
 		pile[i].onmouseover = null
 		pile[i].onmouseout = null
 
-		for(var k = 0; k < allcards2.length; k++){
+		for(var k = 1; k < allcards2.length; k++){
 			allcards2[k].style.opacity=0;
 			allcards2[k].style.position = "relative";
 			if(leftRight != 0)
@@ -177,7 +177,6 @@ function applyCardsDown(cardsDown) {
 		}
 		allcards2[arrayOfLatestCards[i]].style.opacity = 1;
 	}
-
 }
 function doLeaderboard(game) {
 	innerText = ""
