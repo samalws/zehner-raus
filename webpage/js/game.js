@@ -126,30 +126,30 @@ function applyCardsDown(cardsDown) {
 		const leftRight = leftRightOG;
 		const allcards2 = pile[i].querySelectorAll('.card')
 		pile[i].onmouseover = function() {
-			for(var k = 0; k < nthchildindex; k++){
+			for(var k = 0; k < arrayOfLatestCards[i]; k++){
 				allcards2[k].style.opacity = 1;
 			}
-			allcards2[nthchildindex].style.position = "relative";
+			allcards2[arrayOfLatestCards[i]].style.position = "relative";
 			if(leftRight != 0)
-				allcards2[nthchildindex].style.marginLeft = "-10vh"; //test
+				allcards2[arrayOfLatestCards[i]].style.marginLeft = "-10vh"; //test
 			else
-				allcards2[nthchildindex].style.marginRight = "-10vh";
-			allcards2[nthchildindex].style.opacity = 1;
+				allcards2[arrayOfLatestCards[i]].style.marginRight = "-10vh";
+			allcards2[arrayOfLatestCards[i]].style.opacity = 1;
 		}
 
 		pile[i].onmouseout = function() {
 			console.log(leftRight);
-			for(var k  = 0; k < nthchildindex; k++){
+			for(var k  = 0; k < arrayOfLatestCards[i]; k++){
 				allcards2[k].style.opacity = 0;
 			}
-			allcards2[nthchildindex].style.position = "absolute";
+			allcards2[arrayOfLatestCards[i]].style.position = "absolute";
 			if(leftRight != 0)
-				allcards2[nthchildindex].style.marginLeft = "0";
+				allcards2[arrayOfLatestCards[i]].style.marginLeft = "0";
 			else{
-				allcards2[nthchildindex].style.marginRight = "0";
-				allcards2[nthchildindex].style.right = "0";
+				allcards2[arrayOfLatestCards[i]].style.marginRight = "0";
+				allcards2[arrayOfLatestCards[i]].style.right = "0";
 			}
-			allcards2[nthchildindex].style.opacity = 1;
+			allcards2[arrayOfLatestCards[i]].style.opacity = 1;
 		}
 	}
 }
