@@ -1,10 +1,28 @@
 /*jry bits and bobs from here on out lol*/
 console.log("main.js loaded")
+var playerlist = ["uninitialized in js"]
+var name = "unnamed friend" //receive this somehow
+place = 1
 
-var playerlist = ["currentname1", "currentname2", "currentname3", "currentname4", "currentname5", "currentname6"]
-var name; //receive this somehow
-var place = 1; //index in playerlist
 
+//set playerlist to actually exist
+/*
+playerlist = game.plrlist
+var doc = document.getElementById("playerlist")
+var content = "Playerlist :<br>"
+for(var i = 0; i < playerlist.length; i++){
+  if(playerlist[i] == name){
+    content += "<input class=\"textbox\" type = \"text\" placeholder = \"" + name + "\" id = \"name\" + value = \"" + name + "\"style = \"color:yellow\">"
+    content += "<br>"
+  } else{
+    content += playerlist[i] + "<br>"
+  }
+}
+doc.innerHTML = content;
+*/
+
+//send message in chatbox
+//TODO ACTUALLY SEND MESSAGES
 var input = document.getElementById("send_message");
 input.addEventListener("keyup", function(event) {
   if (event.keyCode === 13) {
@@ -47,6 +65,8 @@ function loadSocket() {
 			while (nextSpace < after.length && after[nextSpace] != " ") nextSpace++
 			myNumber = parseInt(after.substring(0,nextSpace))
 			gameState = gameFromJSON(after.substring(nextSpace+1))
+
+      playerlist = game.plrlist
 
 			gameInfo = [myNumber,gameState]
 			applyGameState(myNumber,gameState)
