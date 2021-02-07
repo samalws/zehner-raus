@@ -54,7 +54,7 @@ class Card {
 
 class Game {
 	// dran = the person whose turn it is, adrian moment lol
-	// dranState: -1 if played a card, 0 if just starting turn, n if drawn n cards from deck
+	// dranState: -2 if drew card that you can play but didnt play it yet, -1 if played a card, 0 if just starting turn, n if drawn n cards from deck
 	constructor(hands,dran,dranState,deck,cardsDown,winOrder,numChanges,plrList) {
 		this.hands = hands
 		this.dran = dran
@@ -78,7 +78,7 @@ class Game {
 		return this.winOrder.includes(this.dran)
 	}
 	canEndTurn() {
-		return this.dranState == -1 || this.dranState == 3 || this.dranEmptyHand()
+		return this.dranState < 0 || this.dranState == 3 || this.dranEmptyHand()
 	}
 	justEndTurn() {
 		if (!this.canEndTurn())
@@ -93,11 +93,13 @@ class Game {
 		if (this.gameIsOver() || jft == undefined)
 			return undefined
 		else if (jft.dranWon())
-			return jft.finishTurn()
+			return jft.endTurn()
 		else
 			return jft
 	}
 	playCard(i) {
+		if (this.dranState > 0)
+			return undefined
 		const hand = this.hands[this.dran]
 		if (i >= hand.length)
 			return undefined
@@ -106,7 +108,8 @@ class Game {
 		if (newCardsDown == undefined)
 			return undefined
 		const newHands = replaceIndex(this.dran,removeIndex(i,hand),this.hands)
-		return new Game(newHands,this.dran,-1,this.deck,newCardsDown,this.winOrder,this.numChanges+1,this.plrList)
+		const adjustedGame = new Game(newHands,this.dran,-1,this.deck,newCardsDown,this.winOrder,this.numChanges+1,this.plrList)
+		return this.dranState == -2 ? adjustedGame.endTurn() : adjustedGame
 	}
 	cardIsPlayable(card) {
 		return card.play(this.cardsDown) !== undefined
@@ -118,19 +121,16 @@ class Game {
 		return false
 	}
 	cardIsPlayable(card) {
-        return card.play(this.cardsDown) !== undefined
-    }
+        	return card.play(this.cardsDown) !== undefined
+    	}
 	drawCard() {
 		if (this.canPlayCard() || this.canEndTurn())
 			return undefined
 		const cardDrawn = this.deck[0]
-		const newHands = replaceIndex(this.dran,[cardDrawn].concat(this.hands[this.dran]),this.hands)
-		const added = new Game(newHands,this.dran,this.dranState+1,removeIndex(0,this.deck),this.cardsDown,this.winOrder,this.numChanges+1,this.plrList)
-		const played = added.playCard(0)
-		if (played != undefined)
-			return played
-		else
-			return added
+		const isPlayable = this.cardIsPlayable(cardDrawn)
+		const newHands = isPlayable ? this.hands : replaceIndex(this.dran,[cardDrawn].concat(this.hands[this.dran]),this.hands)
+		const newDranState = isPlayable ? -2 : this.dranState+1
+		return new Game(newHands,this.dran,newDranState,removeIndex(0,this.deck),this.cardsDown,this.winOrder,this.numChanges+1,this.plrList)
 	}
 }
 
