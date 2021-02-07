@@ -92,6 +92,7 @@ function applyCardsDown(cardsDown) {
 		const ten = row.querySelector(".card:not(.playedcardleft,.playedcardright)")
 		ten.style.opacity = tensPlayed[suitNum] ? 1 : 0
 
+		/*
 		const lowerCards = row.querySelectorAll(".playedcardleft") //EVENTUALLY SWAP FOR LEFT
 		const thisPileVals = pileValues[suitNum]
 		for (var i = 0; i < 10; i++)
@@ -101,6 +102,7 @@ function applyCardsDown(cardsDown) {
 		for (var i = 0; i < 10; i++)
 			upperCards[i].style.opacity = i + 11 <= thisPileVals[1] ? 1 : 0
 	}
+	*/
 
 	var arrayOfLatestCards = []; //putting into a single array
 	for(var ii = 0; ii < 4; ii++){
