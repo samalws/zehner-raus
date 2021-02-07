@@ -101,8 +101,9 @@ function applyCardsDown(cardsDown) {
 		const upperCards = row.querySelectorAll(".playedcardright") //EVENTUALLY SWAP FOR RIGHT
 		for (var i = 0; i < 10; i++)
 			upperCards[i].style.opacity = i + 11 <= thisPileVals[1] ? 1 : 0
+		*/
 	}
-	*/
+
 
 	var arrayOfLatestCards = []; //putting into a single array
 	for(var ii = 0; ii < 4; ii++){
