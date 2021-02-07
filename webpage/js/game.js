@@ -105,7 +105,7 @@ function applyCardsDown(cardsDown) {
 
 	var arrayOfLatestCards = []; //putting into a single array
 	for(var ii = 0; ii < 4; ii++){
-		for(var jj = 1; jj > 0; jj--){
+		for(var jj = 1; jj >= 0; jj--){
 			arrayOfLatestCards.push(convertIDtoIndex(pileValues[ii][jj]))
 		}
 	}
