@@ -7,12 +7,10 @@ updatePlayerList(playerlist)
 updateLobbyID(lobbyID);
 
 var input2 = document.getElementById("name");
-input2.placeholder = name;
-input2.value = name;
 
 input2.addEventListener("keyup", function(event) {
   if (event.keyCode === 13) {
-   event.preventDefault();
+   //event.preventDefault();
    var newname = input2.value
    /*
    input2.placeholder = newname;
@@ -108,7 +106,7 @@ function loadSocket() {
 		} else if (event.data.substring(0,"yourLobby ".length) == "yourLobby ") {
 			let rest = event.data.substring("yourLobby ".length)
 			let space = rest.search(" ")
-			var newLobbyId = parseInt(rest.substring(0,space))
+			var newLobbyID = parseInt(rest.substring(0,space))
       updateLobbyID(newLobbyID);
 			rest = rest.substring(space+1)
 			space = rest.search(" ")
@@ -119,6 +117,22 @@ function loadSocket() {
       playerlist = lobbyInfo
       name = playerlist[myLobbyIndex]
       updatePlayerList(playerlist)
+			var input2 = document.getElementById("name");
+
+input2.addEventListener("keyup", function(event) {
+  if (event.keyCode === 13) {
+   //event.preventDefault();
+   var newname = input2.value
+   /*
+   input2.placeholder = newname;
+   input2.value = newname;
+   */
+   changeName(newname);
+   updatePlayerList(playerlist)
+   alert("Name changed successfully to: " + name);
+  }
+});
+
 		} else if (event.data == "ur not in a lobby kekl") {
 			alert("ur not in a lobby kekl")
 			tohome();
