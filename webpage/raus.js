@@ -78,7 +78,7 @@ class Game {
 		return this.winOrder.includes(this.dran)
 	}
 	canEndTurn() {
-		return this.dranState < 0 || this.dranState == 3 || this.dranEmptyHand()
+		return this.dranState == -1 || this.dranState == 0 || this.dranState == 3 || this.dranEmptyHand()
 	}
 	justEndTurn() {
 		if (!this.canEndTurn())
@@ -128,7 +128,7 @@ class Game {
 			return undefined
 		const cardDrawn = this.deck[0]
 		const isPlayable = this.cardIsPlayable(cardDrawn)
-		const newHands = isPlayable ? this.hands : replaceIndex(this.dran,[cardDrawn].concat(this.hands[this.dran]),this.hands)
+		const newHands = replaceIndex(this.dran,[cardDrawn].concat(this.hands[this.dran]),this.hands)
 		const newDranState = isPlayable ? -2 : this.dranState+1
 		return new Game(newHands,this.dran,newDranState,removeIndex(0,this.deck),this.cardsDown,this.winOrder,this.numChanges+1,this.plrList)
 	}
