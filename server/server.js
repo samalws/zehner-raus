@@ -78,7 +78,7 @@ function serveGameWithExtraStuff(plrs,doneCallback) {
 	const receivedMsgEvent = callbacks[0]
 	const getGame = callbacks[1]
 
-	msgHandler = (msg) => {
+	msgHandler = (plrNum) => (msg) => {
 		const msg1 = msg.substring(5)
 		switch (msg.substring(0,5)) {
 		case "move ": // make a move / ask for game state
@@ -95,8 +95,9 @@ function serveGameWithExtraStuff(plrs,doneCallback) {
 	disconnectHandler = () => gameOver(getGame())
 
 	for (plrNum in conns) {
-		const conn = conns[plrNum]
-		conn.on("message",msgHandler)
+		const num = plrNum
+		const conn = conns[num]
+		conn.on("message",msgHandler(num))
 		conn.on("disconnect",disconnectHandler)
 	}
 }

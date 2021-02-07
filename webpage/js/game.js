@@ -56,15 +56,15 @@ function applyHand(hand, game) {
 
 function clicky(index) {
 	//called upon clicking a card!
-	socket.send("move playCard "+index)
+	socket.send(id+"move playCard "+index)
 }
 
 function endTurn() {
-	socket.send("move endTurn")
+	socket.send(id+"move endTurn")
 }
 
 function drawCard() {
-	socket.send("move drawCard")
+	socket.send(id+"move drawCard")
 }
 
 function applyDranState(dranState) {
