@@ -16,7 +16,7 @@ body {
 	transform: translateX(-50%);
 }
 
-.inputName{
+.gameidContainer{
   position: absolute;
 	top: 50%;
 	left: 50%;
@@ -26,13 +26,22 @@ body {
   text-align: center;
 }
 
-.textbox{
+#gameid{
   text-align: center;
   background-color: inherit;
   font: inherit;
   color: inherit;
   border: none;
   height: 2em;
+}
+
+.textbox{
+  text-align: center;
+  background-color: inherit;
+  font: inherit;
+  color: inherit;
+  border: none;
+  height: 1.5em;
 }
 
 .playerlist{
