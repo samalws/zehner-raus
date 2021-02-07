@@ -50,13 +50,28 @@ class Card {
 	canPlay(cards) {
 		return this.play(cards) != undefined
 	}
+	compareTo(card) {
+		if (this.suit == card.suit)
+			return this.number > card.number ? 1 : -1
+		else
+			return this.suit > card.suit ? 1 : -1
+	}
+}
+
+function sortHands(hands) {
+	const hands2 = []
+	for (i in hands) {
+		hands2.push([...hands[i]])
+		hands2[i].sort((x,y) => x.compareTo(y))
+	}
+	return hands2
 }
 
 class Game {
 	// dran = the person whose turn it is, adrian moment lol
 	// dranState: -2 if drew card that you can play but didnt play it yet, -1 if played a card, 0 if just starting turn, n if drawn n cards from deck
 	constructor(hands,dran,dranState,deck,cardsDown,winOrder,numChanges,plrList) {
-		this.hands = hands
+		this.hands = sortHands(hands)
 		this.dran = dran
 		this.dranState = dranState
 		this.deck = deck
