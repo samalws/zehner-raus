@@ -119,20 +119,18 @@ function applyCardsDown(cardsDown) {
 
 	  //get nth childindex from arrayofLatestCards
 	  leftRightOG = i % 2;
-	  console.log(leftRightOG);
+
 
 	  if(arrayOfLatestCards[i] == -1){
 	    continue;
 	  }
 
-
-
-
 	  const leftRight = leftRightOG;
+		console.log(leftRight);
 	  const allcards2 = pile[i].querySelectorAll('.card')
 
-		pile[i].removeAttribute('onmouseover')
-		pile[i].removeAttribute('onmouseout')
+		pile[i].onmouseover = null
+		pile[i].onmouseout = null
 
 	  pile[i].onmouseover = function() {
 	    for(var k = 0; k < arrayOfLatestCards[i]; k++){
