@@ -130,6 +130,10 @@ function applyCardsDown(cardsDown) {
 
 	  const leftRight = leftRightOG;
 	  const allcards2 = pile[i].querySelectorAll('.card')
+
+		pile[i].removeAttribute('onmouseover')
+		pile[i].removeAttribute('onmouseout')
+
 	  pile[i].onmouseover = function() {
 	    for(var k = 0; k < arrayOfLatestCards[i]; k++){
 	      allcards2[k].style.opacity = 1;
