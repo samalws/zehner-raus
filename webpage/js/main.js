@@ -66,7 +66,7 @@ function loadSocket() {
 			myNumber = parseInt(after.substring(0,nextSpace))
 			gameState = gameFromJSON(after.substring(nextSpace+1))
 
-      playerlist = game.plrlist
+      //playerlist = game.plrlist
 
 			gameInfo = [myNumber,gameState]
 			applyGameState(myNumber,gameState)
