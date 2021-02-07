@@ -58,7 +58,7 @@ function serveGameWithExtraStuff(plrs,doneCallback) {
 	const conns = []
 	for (i in plrs)
 		conns.splice(conns.length,0,plrs[i].conn)
-	const plrList = lobbyToSerializable(plrs)
+	const plrList = lobbyToPlayerList(plrs)
 
 	const numPlayers = conns.length
 	const msgToClient = ((plrNum, msg) => conns[plrNum].send("gameState " + msg))
