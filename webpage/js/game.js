@@ -92,12 +92,12 @@ function applyCardsDown(cardsDown) {
 		const ten = row.querySelector(".card:not(.playedcardleft,.playedcardright)")
 		ten.style.opacity = tensPlayed[suitNum] ? 1 : 0
 
-		const lowerCards = row.querySelectorAll(".playedcardright") //EVENTUALLY SWAP FOR LEFT
+		const lowerCards = row.querySelectorAll(".playedcardleft") //EVENTUALLY SWAP FOR LEFT
 		const thisPileVals = pileValues[suitNum]
 		for (var i = 0; i < 10; i++)
 			lowerCards[i].style.opacity = i >= thisPileVals[0] ? 1 : 0
 
-		const upperCards = row.querySelectorAll(".playedcardleft") //EVENTUALLY SWAP FOR RIGHT
+		const upperCards = row.querySelectorAll(".playedcardright") //EVENTUALLY SWAP FOR RIGHT
 		for (var i = 0; i < 10; i++)
 			upperCards[i].style.opacity = i + 11 <= thisPileVals[1] ? 1 : 0
 	}
