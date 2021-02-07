@@ -129,7 +129,7 @@ function applyCardsDown(cardsDown) {
 			for(var k = 0; k < arrayOfLatestCards[i]; k++){
 				allcards2[k].style.opacity = 1;
 			}
-			console.log("making this: " + arrayOfLatestCards + " suit: "+ i + "    VISIBLE")
+			console.log("making this: " + arrayOfLatestCards[i] + " suit: "+ i + "    VISIBLE")
 			allcards2[arrayOfLatestCards[i]].style.position = "relative";
 			if(leftRight != 0)
 				allcards2[arrayOfLatestCards[i]].style.marginLeft = "-10vh"; //test
@@ -143,7 +143,7 @@ function applyCardsDown(cardsDown) {
 			for(var k  = 0; k < arrayOfLatestCards[i]; k++){
 				allcards2[k].style.opacity = 0;
 			}
-			console.log("making this: " + arrayOfLatestCards + " suit: "+ i + "    INVISIBLE")
+			console.log("making this: " + arrayOfLatestCards[i] + " suit: "+ i + "    INVISIBLE")
 			allcards2[arrayOfLatestCards[i]].style.position = "absolute";
 			if(leftRight != 0)
 				allcards2[arrayOfLatestCards[i]].style.marginLeft = "0";
