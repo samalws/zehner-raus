@@ -220,14 +220,14 @@ function removeLobby(lobbyId,lobbies,forGame=false) {
 		removePlrFromLobby(lobby[0].conn,lobbies,forGame)
 	delete lobbies[lobbyId]
 }
-function addPlrToLobby(conn,lobbyId,lobbies) { // return plr's id
+function addPlrToLobby(conn,lobbyId,name,lobbies) { // return plr's id
 	if (userIsInALobby(conn,lobbies))
 		return undefined
 
 	const lobby = lobbies[lobbyId]
 	const user = {}
 	user.conn = conn
-	user.name = "unnamed friend"
+	user.name = name
 	user.id = makeUserId(lobbyId,lobbies)
 	lobby.splice(lobby.length,0,user)
 
@@ -237,7 +237,7 @@ function addPlrToLobby(conn,lobbyId,lobbies) { // return plr's id
 
 	return user.id
 }
-function addLobby(conn,lobbies) { // return [user id,lobby id]
+function addLobby(conn,name,lobbies) { // return [user id,lobby id]
 	if (userIsInALobby(conn,lobbies))
 		return undefined
 
@@ -245,7 +245,7 @@ function addLobby(conn,lobbies) { // return [user id,lobby id]
 	if (lobbies[lobbyId] !== undefined)
 		return undefined
 	lobbies[lobbyId] = []
-	const userId = addPlrToLobby(conn,lobbyId,lobbies)
+	const userId = addPlrToLobby(conn,lobbyId,name,lobbies)
 	if (userId === undefined) {
 		removeLobby(lobbyId,lobbies)
 		return undefined
@@ -316,13 +316,17 @@ function lobbyListenConn(conn,lobbies) {
 		if (msg == "leaveLobby")
 			returnVal = removePlrFromLobby(conn,lobbies)
 		else if (msg.substring(0,"joinLobby ".length) == "joinLobby ") {
-			restOfMsg = parseInt(msg.substring("joinLobby ".length))
+			const restOfMsg = parseInt(msg.substring("joinLobby ".length))
+			const space = restOfMsg.search(" ")
+			const lobbyId = restOfMsg.substring(0,space)
+			const name = restOfMsg.substring(space+1)
 			if (lobbies[restOfMsg] !== undefined)
-				returnVal = addPlrToLobby(conn,restOfMsg,lobbies)
+				returnVal = addPlrToLobby(conn,lobbyId,name,lobbies)
 			console.log("joinLobby return val "+returnVal)
-		} else if (msg == "addLobby")
-			returnVal = addLobby(conn,lobbies)
-		else if (msg.substring(0,"changeName ".length) == "changeName ") {
+		} else if (msg.substring(0,"addLobby ".length) == "addLobby ") {
+			const restOfMsg = parseInt(msg.substring("addLobby ".length))
+			returnVal = addLobby(conn,restOfMsg,lobbies)
+		} else if (msg.substring(0,"changeName ".length) == "changeName ") {
 			restOfMsg = msg.substring("changeName ".length)
 			returnVal = changeName(conn,restOfMsg,lobbies)
 		} else if (msg == "startGame")

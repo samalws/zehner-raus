@@ -16,7 +16,7 @@ function joinLobby(){
   //tolobby();
   //undelet
   vals = getVals();
-  socket.send(id+"joinLobby "+vals[0])
+  socket.send(id+"joinLobby "+vals[0]+" "+vals[1])
   //setTimeout(1000,() => socket.send(id+"changeName "+vals[1]))
 }
 
@@ -25,7 +25,7 @@ function addLobby(){
   //tolobby();
   //undelet
   vals = getVals();
-  socket.send(id+"addLobby")
+  socket.send(id+"addLobby "+vals[1])
   //setTimeout(1000,() => socket.send(id+"changeName "+vals[1]))
 }
 
