@@ -53,8 +53,7 @@ function updatePlayerList(playerlist){
   //playerlist array of players, with host first
   var doc = document.getElementById("playerlist")
   var content = "Playerlist :<br>"
-  content += playerlist[0] + " (host)<br>"
-  for(var i = 1; i < playerlist.length; i++){
+  for(var i = 0; i < playerlist.length; i++){
     if(playerlist[i] == name){
       content += "<input class=\"textbox\" type = \"text\" placeholder = \"" + name + "\" id = \"name\" + value = \"" + name + "\"style = \"color:yellow\">"
       content += "<br>"
