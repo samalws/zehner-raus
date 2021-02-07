@@ -213,10 +213,7 @@ body{
   margin: auto;
 }
 
-.endbutton:hover{
-  background-color: red;
-  transform: translate(-25%, -25%) scale(1.5);
-}
+
 
 .cardpile{
   position: relative;
@@ -299,6 +296,11 @@ body{
     transform: translate(0, 0) scale(1);
     border: 3px solid red;
   }
+}
+
+.endbutton:hover{
+  background-color: red;
+  transform: translate(-25%, -25%) scale(1.5) !important;
 }
 
 .center-card{
