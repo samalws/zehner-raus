@@ -14,13 +14,13 @@ input2.addEventListener("keyup", function(event) {
   if (event.keyCode === 13) {
    event.preventDefault();
    var newname = input2.value
-   alert("Name changed successfully to: " + newname);
    /*
    input2.placeholder = newname;
    input2.value = newname;
    */
    changeName(newname);
    updatePlayerList(playerlist)
+   alert("Name changed successfully to: " + name);
   }
 });
 
@@ -44,6 +44,7 @@ function updateScroll(){
 }
 
 function changeName(newname){
+  console.log("trying to change name")
   socket.send(id + "changeName " + newname)
 }
 
@@ -107,13 +108,14 @@ function loadSocket() {
 		} else if (event.data.substring(0,"yourLobby ".length) == "yourLobby ") {
 			let rest = event.data.substring("yourLobby ".length)
 			let space = rest.search(" ")
-			lobbyId = parseInt(rest.substring(0,space))
+			var newLobbyId = parseInt(rest.substring(0,space))
+      updateLobbyID(newLobbyID);
 			rest = rest.substring(space+1)
 			space = rest.search(" ")
 			const myLobbyIndex = parseInt(rest.substring(0,space))
 			rest = rest.substring(space+1)
 			const lobbyInfo = JSON.parse(rest)
-			console.log(lobbyId,myLobbyIndex,lobbyInfo)
+			console.log(lobbyID,myLobbyIndex,lobbyInfo)
       playerlist = lobbyInfo
       name = playerlist[myLobbyIndex]
       updatePlayerList(playerlist)
