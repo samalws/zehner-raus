@@ -53,7 +53,7 @@ function serveJustGame(numPlayers, msgToClient, gameOver, plrList) {
 			bumpPlayer(plrNum)
 	}, () => game]
 }
-
+// TODO use actual connection id instead of made up ass lobby user id
 function serveGameWithExtraStuff(plrs,doneCallback) {
 	const conns = []
 	for (i in plrs)
@@ -162,6 +162,12 @@ function lobbyToSerializable(lobby) {
 function lobbyToString(lobby) {
 	return JSON.stringify(lobbyToSerializable(lobby))
 }
+function lobbyToPlayerlist(lobby) {
+	return lobby.map((user) => user.name)
+}
+function lobbyToPlayerListString(lobby) {
+	return JSON.stringify(lobbyToPlayerList(lobby))
+}
 function userIdInLobby(conn,lobbyId,lobbies) {
 	const lobby = lobbies[lobbyId]
 	for (i in lobby)
@@ -171,7 +177,7 @@ function userIdInLobby(conn,lobbyId,lobbies) {
 }
 function broadcastLobbyInfo(lobbyId,lobbies) {
 	const lobby = lobbies[lobbyId]
-	const s = lobbyToString(lobby)
+	const s = lobbyToPlayerListString(lobby)
 	for (i in lobby)
 		lobby[i].conn.send("yourLobby " + lobbyId + " " + i + " " + s)
 }
