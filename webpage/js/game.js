@@ -67,8 +67,12 @@ function drawCard() {
 	socket.send(id+"move drawCard")
 }
 
-function applyDranState(dranState) {
-	// tf do I do here lmao
+function applyCanEndTurn(game, myIndex) {
+	if(game.dran == myIndex && game.canEndTurn()){
+		document.getElementsByClassName("endbutton")[0].classList.add('highlighted')
+	} else{
+				document.getElementsByClassName("endbutton")[0].classList.remove('highlighted')
+	}
 }
 function applyDeckAmt(amt) {
 	document.getElementById("deck-left").innerText = amt
@@ -189,6 +193,7 @@ function applyGameState(myNumber,game) {
 	applyHand(game.hands[myNumber], game)
 	applyDeckAmt(game.deck.length)
 	applyCardsDown(game.cardsDown)
+	applyCanEndTurn(game, myNumber)
 	doLeaderboard(game)
 }
 
