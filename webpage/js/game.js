@@ -77,9 +77,9 @@ function applyCardsDown(cardsDown) {
 	let tensPlayed = [false,false,false,false]
 	let pileValues = [[10,10],[10,10],[10,10],[10,10]]
 	cardsDown.forEach((card) => {
-		if (card < 10)
+		if (card.number < 10)
 			pileValues[card.suit][0] = card.number
-		else if (card > 10)
+		else if (card.number > 10)
 			pileValues[card.suit][1] = card.number
 		else
 			tensPlayed[card.suit] = true
