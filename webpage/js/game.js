@@ -105,7 +105,7 @@ function applyCardsDown(cardsDown) {
 
 	var arrayOfLatestCards = []; //putting into a single array
 	for(var ii = 0; ii < 4; ii++){
-		for(var jj = 1; jj >= 0; jj--){
+		for(var jj = 0; jj < 2; jj++){
 			arrayOfLatestCards.push(convertIDtoIndex(pileValues[ii][jj]))
 		}
 	}
@@ -131,7 +131,7 @@ function applyCardsDown(cardsDown) {
 			}
 			console.log("making this: " + arrayOfLatestCards[i] + " suit: "+ i + "    VISIBLE")
 			allcards2[arrayOfLatestCards[i]].style.position = "relative";
-			if(leftRight != 0)
+			if(leftRight == 0)
 				allcards2[arrayOfLatestCards[i]].style.marginLeft = "-10vh"; //test
 			else
 				allcards2[arrayOfLatestCards[i]].style.marginRight = "-10vh";
@@ -145,7 +145,7 @@ function applyCardsDown(cardsDown) {
 			}
 			console.log("making this: " + arrayOfLatestCards[i] + " suit: "+ i + "    INVISIBLE")
 			allcards2[arrayOfLatestCards[i]].style.position = "absolute";
-			if(leftRight != 0)
+			if(leftRight == 0)
 				allcards2[arrayOfLatestCards[i]].style.marginLeft = "0";
 			else{
 				allcards2[arrayOfLatestCards[i]].style.marginRight = "0";
