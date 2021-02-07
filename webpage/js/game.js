@@ -129,6 +129,8 @@ function applyCardsDown(cardsDown) {
 		pile[i].onmouseover = null
 		pile[i].onmouseout = null
 
+		allcards2[0].style.opacity = 0;
+		allcards2[0].style.opacity = "relative";
 		for(var k = 1; k < allcards2.length; k++){
 			allcards2[k].style.opacity=0;
 			allcards2[k].style.position = "relative";
