@@ -102,58 +102,59 @@ function applyCardsDown(cardsDown) {
 			upperCards[i].style.opacity = i + 11 <= thisPileVals[1] ? 1 : 0
 	}
 
-
 	var arrayOfLatestCards = []; //putting into a single array
 	for(var ii = 0; ii < 4; ii++){
-		for(var jj = 0; jj < 2; jj++){
-			arrayOfLatestCards.push(convertIDtoIndex(pileValues[ii][jj]))
-		}
+	  for(var jj = 0; jj < 2; jj++){
+	    arrayOfLatestCards.push(convertIDtoIndex(pileValues[ii][jj]))
+	  }
 	}
 
 	console.log(arrayOfLatestCards)
 	var pile = document.getElementsByClassName("cardpile");
 	for(var j = 0; j < 8; j++){
-		const i = j
+	  const i = j
 
-		//get nth childindex from arrayofLatestCards
-		leftRightOG = i % 2;
-		console.log(leftRightOG);
+	  //get nth childindex from arrayofLatestCards
+	  leftRightOG = i % 2;
+	  console.log(leftRightOG);
 
-		if(arrayOfLatestCards[i] == -1){
-			continue;
-		}
+	  if(arrayOfLatestCards[i] == -1){
+	    continue;
+	  }
 
-		const leftRight = leftRightOG;
-		const allcards2 = pile[i].querySelectorAll('.card')
-		pile[i].onmouseover = function() {
-			for(var k = 0; k < arrayOfLatestCards[i]; k++){
-				allcards2[k].style.opacity = 1;
-			}
-			console.log("making this: " + arrayOfLatestCards[i] + " suit: "+ i + "    VISIBLE")
-			allcards2[arrayOfLatestCards[i]].style.position = "relative";
-			if(leftRight == 0)
-				allcards2[arrayOfLatestCards[i]].style.marginLeft = "-10vh"; //test
-			else
-				allcards2[arrayOfLatestCards[i]].style.marginRight = "-10vh";
-			allcards2[arrayOfLatestCards[i]].style.opacity = 1;
-		}
 
-		pile[i].onmouseout = function() {
-			console.log(leftRight);
-			for(var k  = 0; k < arrayOfLatestCards[i]; k++){
-				allcards2[k].style.opacity = 0;
-			}
-			console.log("making this: " + arrayOfLatestCards[i] + " suit: "+ i + "    INVISIBLE")
-			allcards2[arrayOfLatestCards[i]].style.position = "absolute";
-			if(leftRight == 0)
-				allcards2[arrayOfLatestCards[i]].style.marginLeft = "0";
-			else{
-				allcards2[arrayOfLatestCards[i]].style.marginRight = "0";
-				allcards2[arrayOfLatestCards[i]].style.right = "0";
-			}
-			allcards2[arrayOfLatestCards[i]].style.opacity = 1;
-		}
+	  const leftRight = leftRightOG;
+	  const allcards2 = pile[i].querySelectorAll('.card')
+	  pile[i].onmouseover = function() {
+	    for(var k = 0; k < arrayOfLatestCards[i]; k++){
+	      allcards2[k].style.opacity = 1;
+	    }
+	    console.log("making this: " + arrayOfLatestCards[i] + " suit: "+ i + "    VISIBLE")
+	    allcards2[arrayOfLatestCards[i]].style.position = "relative";
+	    if(leftRight != 0 && arrayOfLatestCards[i] != 0)
+	      allcards2[arrayOfLatestCards[i]].style.marginLeft = "-10vh"; //test
+	    else if(arrayOfLatestCards[i] != 0)
+	      allcards2[arrayOfLatestCards[i]].style.marginRight = "-10vh";
+	    allcards2[arrayOfLatestCards[i]].style.opacity = 1;
+	  }
+
+	  pile[i].onmouseout = function() {
+	    console.log(leftRight);
+	    for(var k  = 0; k < arrayOfLatestCards[i]; k++){
+	      allcards2[k].style.opacity = 0;
+	    }
+	    console.log("making this: " + arrayOfLatestCards[i] + " suit: "+ i + "    INVISIBLE")
+	    allcards2[arrayOfLatestCards[i]].style.position = "absolute";
+	    if(leftRight != 0)
+	      allcards2[arrayOfLatestCards[i]].style.marginLeft = "0";
+	    else{
+	      allcards2[arrayOfLatestCards[i]].style.marginRight = "0";
+	      allcards2[arrayOfLatestCards[i]].style.right = "0";
+	    }
+	    allcards2[arrayOfLatestCards[i]].style.opacity = 1;
+	  }
 	}
+
 }
 function doLeaderboard(game) {
 	innerText = ""
