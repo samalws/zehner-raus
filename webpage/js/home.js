@@ -44,7 +44,7 @@ function loadLobby() {
 
 //socketAddress defined in cookies.js
 function loadSocket() {
-	socket = new WebSocket("ws://"+socketAddress+":80/ws")
+	socket = new WebSocket("wss://"+socketAddress+"/ws")
 	socket.onopen = () => {
 		console.log("websocket connected")
 		setInterval(() => socket.send(id), 30*1000)
