@@ -1,8 +1,10 @@
 // npm install ws
+// npm install node-static
 
 const http = require("http")
 const ws = require("ws")
 const fs = require("fs")
+const nodeStatic = require("node-static")
 
 // u really thought i was gonna use nodejs best practices?
 eval(fs.readFileSync("../raus.js").toString())
@@ -433,25 +435,9 @@ const contentTypes = {
 	"js":  "text/javascript"
 }
 function main() {
-	const htServer = http.createServer((req,res) => {
-		let filepath = "../webpage/"
-		if (req.url == "/")
-			filepath += "home.html"
-		else
-			filepath += req.url
-		while (filepath[filepath.length-1] == "/")
-			filepath = filepath.substring(0,filepath.length-1)
-		const split = filepath.split(".")
-		const extension = split[split.length-1]
-		const contentType = contentTypes[extension] || "text/"+extension
-		res.writeHead(200, {"Content-Type": contentType})
-		try {
-			res.end(fs.readFileSync(filepath))
-		} catch (e) {
-			res.end()
-		}
-	})
-	htServer.listen(80,() => {})
+	const files = new nodeStatic.Server("../webpage/", { indexFile: "home.html" })
+	const htServer = http.createServer((req,res) => files.serve(req,res))
+	htServer.listen(80)
 
 	const wsServer = new ws.Server({ server: htServer, path:"/ws" })
 	serveSocket(wsServer)
